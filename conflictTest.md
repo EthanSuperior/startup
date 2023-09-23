@@ -1,2 +1,2 @@
 Adding initial text
-adding github text
+testing merge confilct
