@@ -1,2 +1,2 @@
 Adding initial text
-adding github text
+adding merge conflict text
