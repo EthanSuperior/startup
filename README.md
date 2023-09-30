@@ -38,12 +38,18 @@ I am going to use the required technologies in the following ways.
 
 For this deliverable I built out the structure of my application using HTML.
 
-HTML pages - Four HTML page that represent the ability to login, play the game, view scores and see a bit about the game.
+HTML pages - Four HTML page that represent the ability to login, play the game, view scores and the rules.
+
 Links - The login page automatically links to the play page. All other pages have a menu.
+
 Text - An about page with information on the game of Go.
+
 Images - There is an image representing the board, this will become a HTML canvas when we get to JS for interaction.
+
 Login - Input box and submit button for login info with username/password.
+
 Database - The scores of past games, and player infor along with username/password database.
+
 WebSocket - The game will be played with realtime information.
 
 ## CSS deliverable
