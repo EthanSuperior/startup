@@ -4,17 +4,16 @@
         <meta charset="UTF-8" />
         <!-- Tell browsers not to scale the viewport automatically -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Simon HTML</title>
+        <title>Go</title>
         <link rel="icon" href="favicon.ico" />
     </head>
     <body>
         <!-- Use header, main, and footer elements to give semantic structure -->
         <header>
-            <h1>Simon<sup>&reg;</sup></h1>
+            <h1>Go</h1>
 
             <!-- Navigation elements -->
             <nav>
-                <!-- Menu is a semantic alternative to <ul> that represents an interaction -->
                 <menu>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="play.html">Play</a></li>
@@ -23,25 +22,25 @@
                 </menu>
             </nav>
 
-            <!-- Since we don't have the ability to style we use old style HTML to give some visual formatting -->
             <hr />
         </header>
 
         <main>
             <h1>Welcome</h1>
-            <p>Login to play</p>
+            <p>Enter your login information to play - Go</p>
             <form method="get" action="play.html">
                 <label for="name">Name</label>
-                <input type="text" id="name" placeholder="Your name here" />
+                <input type="text" id="name" placeholder="Enter username here" />
+                <label for="password">Password</label>
+                <input type="text" id="password" placeholder="Enter password here" />
                 <button type="submit">Login</button>
             </form>
         </main>
 
         <footer>
             <hr />
-            <span class="text-reset">Author Name(s)</span>
-            <br />
-            <a href="https://github.com/webprogramming260/simon-html">GitHub</a>
+            <span class="text-reset">Website Creator</span>
+            <a href="https://github.com/EthanSuperior/startup">Evan Chase</a>
         </footer>
     </body>
 </html>
