@@ -5,134 +5,98 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js" integrity="sha512-0QbL0ph8Tc8g5bLhfVzSqxe9GERORsKhIn1IrpxDAgUsbBGz/V7iSav2zzW325XGd1OMLdL4UiqRJj702IeqnQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        
         <link rel="stylesheet" href="main.css">
         <title>Go</title>
         <link rel="icon" href="favicon.ico" />
     </head>
-    <body>
+    <body class="">
         <!-- Use header, main, and footer elements to give semantic structure -->
         <header>
+        <nav class="navbar navbar-expand-lg navbar-light justify-content-start">
             <div class="container">
-            <nav id="navigation">
-                <a class="logo">Go</a>
-                <a aria-label="mobile menu" class="nav-toggle">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </a>
-            <!-- Navigation elements -->
-                <ul class="menu-left">
-                    <li>
-                        <b><a href="index.html">Login</a></b>
-                    </li>
-                    <li><a href="play.html">Play</a></li>
-                    <li><a href="scores.html">Scores</a></li>
-                    <li><a href="rules.html">Rules</a></li>
-                </ul>
-            </nav>
-        </header>
+                <a class="navbar-brand" style="text-transform: uppercase; ">Go</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse navbar-collapse-right" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.html" target="frame">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="play.html" target="frame">Play</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="scores.html" target="frame">Scores</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="rules.html" target="frame">Rules</a>
+                        </li>
+                        <!-- <li class="nav-item" id="dark-toggle">
+							<a href='#' class="nav-link" id="dark-toggle-icon">Dark Mode <i class="fa text-lg ml-2 cursor-pointer"></i></a>
+						</li> -->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
 
         <hr />
-        <main>
-            <h1>Welcome</h1>
-            <p>Enter your login information to play - Go</p>
-            <form method="get" action="play.html">
-                <label for="name">Name</label>
-                <input type="text" id="name" placeholder="Enter username here" />
-                <label for="password">Password</label>
-                <input type="text" id="password" placeholder="Enter password here" />
-                <button type="submit">Login</button>
-            </form>
-        </main>
+        <iframe name="frame" src="login.html" frameborder="0" class="section"></iframe>
 
         <footer>
             <hr />
-            <p class="signature">
-            <span class="text-reset">Website Creator</span>
-            <a href="https://github.com/EthanSuperior/startup">Evan Chase</a></p>
+            <p class="text-center">
+            <a style="text-transform: uppercase;" href="https://github.com/EthanSuperior/startup">Evan Chase</a></p>
         </footer>
-
-        <script>
-            $(document).ready(()=>{
-            // NAVIGATION LOGO SCROLL TOP
-            $('.logo').on('click', function(e) {
-                e.preventDefault();
-                $('.nav-toggle').removeClass('open');
-                $('.menu-left').removeClass('collapse');
-                $('html, body').animate({
-                    scrollTop: 0
-                }, 750, 'easeInOutQuad')
-            });
-            // LINKS TO ANCHORS
-            $('a[href^="#"]').on('click', function(event) {
-                var $target = $(this.getAttribute('href'));
-
-                if($target.length) {
-                    event.preventDefault();
-                    $('html, body').stop().animate({
-                    scrollTop: $target.offset().top
-                    }, 750, 'easeInOutQuad');
+		<script type="text/javascript">
+			(function setupDarkMode() {
+				function setColorScheme(e) {
+					if (e=='auto') console.log('auto setting theme to '+(e=(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches)? "dark" : "light") +' mode');
+					if (e=='dark') document.body.classList.add("dark")
+					else document.body.classList.remove("dark");
+					// if (e=='light') document.body.classList.add("light")
+					// else document.body.classList.remove("light");
+				}
+				// var darkModePref = "dark";
+				// if (darkModePref == 'dark') document.getElementById("dark-toggle").classList.remove("hidden");
+				var iTag = document.getElementById("dark-toggle-icon");
+				iTag.addEventListener('click', event => {
+					if (iTag.children[0].classList.contains("fa-toggle-off")) {
+						iTag.children[0].classList.remove("fa-toggle-off");
+						iTag.children[0].classList.add("fa-toggle-on", "text-action");
+						setColorScheme("dark");
+					}
+					else {
+						iTag.children[0].classList.remove("fa-toggle-on", "text-action");
+						iTag.children[0].classList.add("fa-toggle-off");
+						setColorScheme("light");
+					}
+				});
+				setColorScheme('auto');
+				iTag.children[0].classList.add(...(document.body.classList.contains("dark")?["fa-toggle-on", "text-action"]:["fa-toggle-off"]));
+			})();
+		</script>
+          <script>
+            // Function to adjust the iframe height
+            function adjustIframeHeight() {
+                var iframe = document.getElementById("frame");
+                if (iframe) {
+                    // Set the iframe height to the content height
+                    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+                    iframe.addEventListener("load", adjustIframeHeight);
                 }
-            });
-
-            // TOGGLE HAMBURGER & COLLAPSE NAV
-            $('.nav-toggle').on('click', function() {
-                $(this).toggleClass('open');
-                $('.menu-left').toggleClass('collapse');
-            });
-            // REMOVE X & COLLAPSE NAV ON ON CLICK
-            $('.menu-left a').on('click', function() {
-                $('.nav-toggle').removeClass('open');
-                $('.menu-left').removeClass('collapse');
-            });
-
-            // SHOW/HIDE NAV
-
-            // Hide Header on on scroll down
-            var didScroll;
-            var lastScrollTop = 0;
-            var delta = 5;
-            var navbarHeight = $('header').outerHeight();
-
-            $(window).scroll(function(event){
-                didScroll = true;
-            });
-
-            setInterval(function() {
-                if (didScroll) {
-                    hasScrolled();
-                    didScroll = false;
-                }
-            }, 250);
-
-            function hasScrolled() {
-                var st = $(this).scrollTop();
-
-                // Make sure they scroll more than delta
-                if(Math.abs(lastScrollTop - st) <= delta)
-                    return;
-
-                // If they scrolled down and are past the navbar, add class .nav-up.
-                // This is necessary so you never see what is "behind" the navbar.
-                if (st > lastScrollTop && st > navbarHeight){
-                    // Scroll Down
-                    $('header').removeClass('show-nav').addClass('hide-nav');
-                    $('.nav-toggle').removeClass('open');
-                    $('.menu-left').removeClass('collapse');
-                } else {
-                    // Scroll Up
-                    if(st + $(window).height() < $(document).height()) {
-                        $('header').removeClass('hide-nav').addClass('show-nav');
-                    }
-                }
-
-                lastScrollTop = st;
             }
-        });
+        
+            // Call the function when the iframe has loaded
+            window.addEventListener("load", adjustIframeHeight);
         </script>
     </body>
 </html>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
