@@ -354,7 +354,6 @@ function win_game() {
         data[username]??={"name":username,"wins":0,"losses":0, "games":0};
         data[username].wins++;
         data[username].games++;
-        Log(''+data[username]);
     });
     ctx.fillStyle = colors[currentPlayer];
     ctx.strokeStyle = "#000";
