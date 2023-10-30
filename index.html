@@ -41,39 +41,30 @@
     <body class="">
         <!-- Use header, main, and footer elements to give semantic structure -->
         <header>
-            <nav class="navbar navbar-expand-lg navbar-light justify-content-start">
-                <div class="container">
-                    <a class="navbar-brand" style="text-transform: uppercase">Go</a>
-                    <button
-                        class="navbar-toggler"
-                        type="button"
-                        data-toggle="collapse"
-                        data-target="#navbarNav"
-                        aria-controls="navbarNav"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation"
-                    >
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse navbar-collapse-right" id="navbarNav">
-                        <ul class="navbar-nav mr-auto">
-                            <li class="nav-item">
-                                <a class="nav-link" href="login.html" target="frame">Login</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="play.html">Play</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="scores.html" target="frame">Scores</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="rules.html" target="frame">Rules</a>
-                            </li>
-                            <!-- <li class="nav-item" id="dark-toggle">
+        <nav class="navbar navbar-expand-lg navbar-light justify-content-start">
+            <div class="container">
+                <a class="navbar-brand" style="text-transform: uppercase; ">Go</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse navbar-collapse-right" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="login.html" target="frame">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="play.html" target="frame">Play</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="scores.html" target="frame">Scores</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="rules.html" target="frame">Rules</a>
+                        </li>
+                        <li class="nav-item" id="dark-toggle">
 							<a href='#' class="nav-link" id="dark-toggle-icon">Dark Mode <i class="fa text-lg ml-2 cursor-pointer"></i></a>
-						</li> -->
-                        </ul>
-                    </div>
+						</li>
+                    </ul>
                 </div>
             </nav>
         </header>
@@ -87,57 +78,7 @@
                 <a style="text-transform: uppercase" href="https://github.com/EthanSuperior/startup">Evan Chase</a>
             </p>
         </footer>
-        <script type="text/javascript">
-            (function setupDarkMode() {
-                function setColorScheme(e) {
-                    if (e == "auto")
-                        console.log(
-                            "auto setting theme to " +
-                                (e =
-                                    window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-                                        ? "dark"
-                                        : "light") +
-                                " mode"
-                        );
-                    if (e == "dark") document.body.classList.add("dark");
-                    else document.body.classList.remove("dark");
-                    // if (e=='light') document.body.classList.add("light")
-                    // else document.body.classList.remove("light");
-                }
-                // var darkModePref = "dark";
-                // if (darkModePref == 'dark') document.getElementById("dark-toggle").classList.remove("hidden");
-                var iTag = document.getElementById("dark-toggle-icon");
-                iTag.addEventListener("click", (event) => {
-                    if (iTag.children[0].classList.contains("fa-toggle-off")) {
-                        iTag.children[0].classList.remove("fa-toggle-off");
-                        iTag.children[0].classList.add("fa-toggle-on", "text-action");
-                        setColorScheme("dark");
-                    } else {
-                        iTag.children[0].classList.remove("fa-toggle-on", "text-action");
-                        iTag.children[0].classList.add("fa-toggle-off");
-                        setColorScheme("light");
-                    }
-                });
-                setColorScheme("auto");
-                iTag.children[0].classList.add(
-                    ...(document.body.classList.contains("dark") ? ["fa-toggle-on", "text-action"] : ["fa-toggle-off"])
-                );
-            })();
-        </script>
-        <script>
-            // Function to adjust the iframe height
-            function adjustIframeHeight() {
-                var iframe = document.getElementById("frame");
-                if (iframe) {
-                    // Set the iframe height to the content height
-                    iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
-                    iframe.addEventListener("load", adjustIframeHeight);
-                }
-            }
-
-            // Call the function when the iframe has loaded
-            window.addEventListener("load", adjustIframeHeight);
-        </script>
+		<script src="main.js"></script>
     </body>
 </html>
 <link
