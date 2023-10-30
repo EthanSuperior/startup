@@ -169,9 +169,20 @@ class otrio {
     }
     getCircle(e) {
         for (let i = 0; i < this.circles.length; i++)
-            if (ctx.isPointInStroke(this.paths[i], e.offsetX + 130, e.offsetY + 160)) return i;
+            if (ctx.isPointInStroke(this.paths[i], ...getClickOffset(e))) return i;
         return null;
     }
+}
+function getClickOffset(e) {
+    let canvasRect = canvas.getBoundingClientRect();
+    const canvasX = 0;//canvasRect.left;
+    const canvasY = 0;//canvasRect.top;
+    const iframe = window.frameElement; // Get the iframe element
+    const iframeRect = iframe.getBoundingClientRect();
+    const iframeX = iframeRect.left;
+    const iframeY = iframeRect.top;
+    console.log(...[e.offsetX - canvasX, e.offsetY - canvasY], [e.offsetX, e.offsetY]);
+    return [e.offsetX, e.offsetY];
 }
 class circle_info {
     constructor(r, c, n) {
@@ -294,7 +305,7 @@ function mouseClick(e) {
 function getSelectedCircle(e) {
     for (let r = 0; r < game.length; r++)
         for (let c = 0; c < game.length; c++) {
-            if (ctx.isPointInPath(game[r][c].inRange, e.offsetX + 130, e.offsetY + 160)) {
+            if (ctx.isPointInPath(game[r][c].inRange, ...getClickOffset(e))) {
                 return new circle_info(r, c, game[r][c].getCircle(e));
             }
         }
