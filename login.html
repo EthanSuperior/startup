@@ -18,8 +18,8 @@
     <body>
         <main class="container">
             <h1 class="mt-5">Welcome</h1>
-            <p class="mb-4">Enter your login information to play - Go</p>
-            <form method="get" action="play.html">
+            <p class="mb-4">Enter your login information to play - Otrio</p>
+            <form method="get" action="play.html" onsubmit="saveUsername()">
                 <div class="mb-3">
                     <label for="name" class="form-label">Name</label>
                     <input type="text" class="form-control" id="name" placeholder="Enter username here">
@@ -30,6 +30,21 @@
                 </div>
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
+            <script>
+                function saveUsername() {
+                    // Get the input element for the username
+                    var usernameInput = document.getElementById('name');
+        
+                    // Get the value entered by the user
+                    var username = usernameInput.value;
+        
+                    // Check if the user entered a username
+                    if (username) {
+                        // Save the username to local storage
+                        localStorage.setItem('username', username);
+                    }
+                }
+            </script>
         </main>
     </body>
 </html>

@@ -117,6 +117,7 @@ class Player {
         this.pieces.forEach((t) => t.draw());
     }
     makeMove(circle_info) {
+        Log(`Player ${currentPlayer+1} moved at ${circle_info.r+1} ${circle_info.c+1} ${circle_info.n+1}`)
         var played_pos = game[circle_info.r][circle_info.c];
         if (played_pos.circles[circle_info.n] == null && this.markPiece(circle_info.n)) {
             played_pos.circles[circle_info.n] = colors[currentPlayer];
@@ -208,6 +209,9 @@ function c_swap(idx, old_c, new_c, is_corpse) {
     (is_corpse ? corpse_colors : colors)[idx] = new_c;
 }
 function OnLoad() {
+    Log(null, 'move');
+    Log(`${localStorage.getItem('username')} started a game with themselves.......`);
+    document.querySelector('span.user-name').textContent = localStorage.getItem('username');
     getSettings();
     gameOver = false;
     currentPlayer = currentPlayer % num_players;
@@ -294,7 +298,6 @@ function highlightSelected(e) {
     }
 }
 function mouseClick(e) {
-    console.log(e.offsetX, e.offsetY);
     if (gameOver) {
         OnLoad();
         return;
@@ -343,7 +346,7 @@ function win_game() {
     draw();
     gameOver = true;
     var txt = "Player " + (currentPlayer + 1) + " Wins!!";
-    console.log("Congrats!!! " + txt);
+    Log("Congrats!!! " + txt);
     ctx.fillStyle = colors[currentPlayer];
     ctx.strokeStyle = "#000";
     ctx.lineWidth = line_width / 2;
@@ -389,7 +392,7 @@ function cats_game() {
     draw();
     gameOver = true;
     var txt = "Nobody wins...";
-    console.log("Cats Game " + txt);
+    Log("Cats Game " + txt);
     ctx.fillStyle = background_color;
     ctx.strokeStyle = "#000";
     ctx.lineWidth = line_width / 2;
@@ -401,5 +404,15 @@ function cats_game() {
     ctx.strokeText(txt, spacing * (width - 0.5), spacing * (width + 0.25));
     ctx.fillText(txt, spacing * (width - 0.5), spacing * (width + 0.25));
     deadMen = [];
+}
+
+var logger = null;
+
+function Log(msg, tag){
+    logger??=document.getElementById("log_msg");
+    if (msg == null) return null;
+    let msgbox = document.createElement('li');
+    msgbox.textContent = msg;
+    logger.appendChild(msgbox);
 }
 //# sourceMappingURL=Otrio.js.map
