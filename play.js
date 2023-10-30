@@ -21,6 +21,14 @@ var players,
     saveCorpses = true,
     deadMen = [];
 document.addEventListener("DOMContentLoaded", () => {
+    Log("Johnny challenged Sammy");
+    const delay = ms => new Promise(res => setTimeout(res, ms));
+    setInterval(() => {
+        Log((Math.random()<.5)?"Johnny beat Sammy!!!":"Sammy beat Johnny!!!");
+        delay(1000+ Math.random()*2000)
+        Log("Johnny and Sammy started a rematch");
+      }, (Math.random() * 3000) + 30000);
+      
     let coll = document.getElementsByClassName("collapsible");
     for (let i = 0; i < coll.length; i++)
         coll[i].addEventListener("click", (e) => {
@@ -182,7 +190,6 @@ function getClickOffset(e) {
     const iframeRect = iframe.getBoundingClientRect();
     const iframeX = iframeRect.left;
     const iframeY = iframeRect.top;
-    console.log(...[e.offsetX - canvasX, e.offsetY - canvasY], [e.offsetX, e.offsetY]);
     return [e.offsetX, e.offsetY];
 }
 class circle_info {
