@@ -351,8 +351,10 @@ function win_game() {
     .then((response) => response.json())
     .then((data) => {
         let username = getUsername();
-        data[username].wins = data[username].wins++|1;
-        data[username].games = data[username].games++|1;
+        data[username]??={"name":username,"wins":0,"losses":0, "games":0};
+        data[username].wins++;
+        data[username].games++;
+        Log(''+data[username]);
     });
     ctx.fillStyle = colors[currentPlayer];
     ctx.strokeStyle = "#000";
@@ -402,7 +404,9 @@ function cats_game() {
     .then((response) => response.json())
     .then((data) => {
         let username = getUsername();
-        data[username].games = data[username].games++|1;
+        data[username]??={"name":username,"wins":0,"losses":0, "games":0};
+        data[username].games++;
+        Log(''+data[username]);
     });
     gameOver = true;
     var txt = "Nobody wins...";
