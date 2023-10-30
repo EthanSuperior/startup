@@ -2,17 +2,14 @@ fetch("scoreboard.json")
   .then((response) => response.json())
   .then((data) => {
   data.forEach((row) => {
-    row.winRate = ((row.wins / row.games) * 100.0).toFixed(2);
+    row.winRate = (((row.wins??0) / row.games) * 100.0).toFixed(2);
   });
   data.sort((a, b) => b.winRate - a.winRate);
   data.forEach((row, index) => {
-    if (index === 0) {
+    if (index === 0)
       row.rank = 1;
-    } else if (row.winRate === data[index - 1].winRate) {
-      row.rank = data[index - 1].rank;
-    } else {
+    else
       row.rank = data[index - 1].rank + 1;
-    }
   });
   data.forEach((row) => {
     $("#scoreTable").append(
@@ -21,9 +18,9 @@ fetch("scoreboard.json")
       "</td><td>" +
       row.name +
       "</td><td>" +
-      row.wins +
+      (row.wins??0) +
       "</td><td>" +
-      row.loses +
+      (row.losses??0) +
       "</td><td>" +
       row.games +
       "</td><td>" +
@@ -47,6 +44,7 @@ fetch("scoreboard.json")
           {"width" : "70px", "targets": 2},
           {"width" : "70px", "targets": 3},
           {"width" : "70px", "targets": 4},
+          // {"width" : "100px", "targets": 5},
         ],
         buttons: [
           'csv', 

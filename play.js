@@ -210,8 +210,8 @@ function c_swap(idx, old_c, new_c, is_corpse) {
 }
 function OnLoad() {
     Log(null, 'move');
-    Log(`${localStorage.getItem('username')} started a game with themselves.......`);
-    document.querySelector('span.user-name').textContent = localStorage.getItem('username');
+    Log(`${getUsername()} started a game with themselves.......`);
+    document.querySelector('span.user-name').textContent = getUsername();
     getSettings();
     gameOver = false;
     currentPlayer = currentPlayer % num_players;
@@ -347,6 +347,13 @@ function win_game() {
     gameOver = true;
     var txt = "Player " + (currentPlayer + 1) + " Wins!!";
     Log("Congrats!!! " + txt);
+    fetch("scoreboard.json")
+    .then((response) => response.json())
+    .then((data) => {
+        let username = getUsername();
+        data[username].wins = data[username].wins++|1;
+        data[username].games = data[username].games++|1;
+    });
     ctx.fillStyle = colors[currentPlayer];
     ctx.strokeStyle = "#000";
     ctx.lineWidth = line_width / 2;
@@ -358,6 +365,7 @@ function win_game() {
     ctx.strokeText(txt, spacing * (width - 0.5), spacing * (width + 0.25));
     ctx.fillText(txt, spacing * (width - 0.5), spacing * (width + 0.25));
 }
+function getUsername(){return localStorage.getItem('username')??'';}
 function getSettings() {
     input_players = input_players ? input_players : document.getElementById("player-count");
     input_size = input_size ? input_size : document.getElementById("game-width");
@@ -390,6 +398,12 @@ function is_cats() {
 function cats_game() {
     lastMouseE = null;
     draw();
+    fetch("scoreboard.json")
+    .then((response) => response.json())
+    .then((data) => {
+        let username = getUsername();
+        data[username].games = data[username].games++|1;
+    });
     gameOver = true;
     var txt = "Nobody wins...";
     Log("Cats Game " + txt);

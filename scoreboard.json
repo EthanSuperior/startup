@@ -1,4 +1,4 @@
 [
-    {"name":"Google", "wins":10000,"loses":0, "games":10000},
-    {"name":"Evan", "wins":10,"loses":3, "games":13}
+    {"name":"Google", "wins":10000, "losses":0, "games":10000},
+    {"name":"Evan", "wins":10, "losses":3, "games":13}
 ]
