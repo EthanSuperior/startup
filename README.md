@@ -4,11 +4,11 @@
 
 ### Elevator pitch
 
-Millennia ago, the great general Sun Zhu penned his magnum opus—_the Art of War_. Encapsulated within its pages were the greatest strategic insights ever written. Battles, once blood-soaked and won by sword, are now are waged in the mind. Embark on a journey into the realm of war's ultimate classic—_Go_ and unveil the truth: 'know the enemy and know yourself, you need not fear the result of a hundred battles'. With each stone you place, you'll shape the battlefield, carve out territory, and outmaneuver your opponents. Will you conquer, or will you become forgotten history?
+Otrio is the ultimate twist on the classic Tic-Tac-Toe game, designed to challenge your strategic thinking and entertain players of all ages. With its elegant and visually striking design, Otrio presents a circular board divided into concentric rings, each featuring three spaces. Your mission is simple yet deeply engaging: align three of your game pieces either horizontally, vertically, or diagonally before your opponent. What sets Otrio apart is the inclusion of three differently sized game pieces, adding complexity and strategy to every move. Are you ready to master the art of Otrio and become the ultimate strategist?"
 
 ### Design
 
-![Mock](https://senseis.xmp.net/diagrams/10/2fe5ab0114a1f972061c176349af890f.png)
+![Mock](https://i.ebayimg.com/images/g/LnAAAOSwZHthCbrS/s-l1200.png)
 
 ### Key features
 
@@ -53,8 +53,25 @@ Database - The scores of past games, and player infor along with username/passwo
 WebSocket - The game will be played with realtime information.
 
 ## CSS deliverable
+For this deliverable I properly styled the application into its final appearance, mostly using Bootstrap.
+
+Body - Header footer, and main content style
+Iframes - Easier Viewing/Loading
+Navigation elements - I added an underline animation and changed the color for anchor elements.
+Nav Bar menu - Collapseable nav bar for the menu for any size device.
+Responsive to window resizing - My app looks great on all window sizes and devices
+Application elements - Used good contrast and whitespace
+Application text content - Consistent fonts
+Application images - It dynamically resizes the image.
 
 ## JavaScript deliverable
+For this deliverable I implemented by JavaScript so that the application works for a single user, tow player. I also added placeholders for future technology.
+
+login - When you press enter or the login button it takes you to the game page, and sets your username.
+database - Displayed the scores. Currently this is stored and retrieved from a json file, which is not updated, but there is code to update it, jsut need to be in a server.
+WebSocket - It logs your moves, and periodically someone else 'wins' a game.
+application logic - The highlight and ranking number change based up the user's selections.
+Otrio Game - Added all the code for the otrio game, switched form doing GO and updated all documentation.
 
 ## Service deliverable
 
