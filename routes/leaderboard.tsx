@@ -12,8 +12,7 @@ export interface ScoreboardRow {
 }
 
 export default async function Leaderboard(_req: Request, ctx: RouteContext){
-
-    const resp = await Deno.readTextFile('./scoreboard.json');
+    const resp = await Deno.readTextFile('scoreboard.json');
     const data: ScoreboardRow[] = (JSON.parse(resp));
     return (
         <main class='flex items-center justify-center mt-6'>

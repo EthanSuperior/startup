@@ -436,7 +436,6 @@ export default function OtrioGame(){
         OnLoad();
     });
     return (
-        <canvas id="canvas" style="width: 100%">Otrio Game</canvas>
+        <canvas id="canvas">Otrio Game</canvas>
     )
 }
-

@@ -2,7 +2,7 @@ type Props = {
   active: string;
 };
 
-export default function Header({ active }: Props) {
+export default function Header() {
   const menus = [
     { name: "Login", href: "/" },
     { name: "Play", href: "/play" },

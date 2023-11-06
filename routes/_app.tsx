@@ -1,4 +1,5 @@
 import { AppProps } from "$fresh/server.ts";
+import Footer from "../components/Footer.tsx";
 import Header from "../components/Header.tsx";
 
 export default function App({ Component }: AppProps) {
@@ -15,15 +16,10 @@ export default function App({ Component }: AppProps) {
       <body
     //    onLoad={setupDarkMode}
        >
-        <Header active="Login"/>
+        <Header />
         <hr />
         <Component />
-        <footer class='p-4'>
-            <hr />
-            <p class="text-center">
-                <a style="text-transform: uppercase" href="https://github.com/EthanSuperior/startup">Evan Chase</a>
-            </p>
-        </footer>
+        <Footer/>
       </body>
     </html>
   );
