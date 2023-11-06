@@ -184,13 +184,12 @@ class otrio {
 }
 function getClickOffset(e) {
     let canvasRect = canvas.getBoundingClientRect();
-    const canvasX = 0;//canvasRect.left;
-    const canvasY = 0;//canvasRect.top;
-    const iframe = window.frameElement; // Get the iframe element
-    const iframeRect = iframe.getBoundingClientRect();
+    const canvasX = canvasRect.left;
+    const canvasY = canvasRect.top;
+    const iframeRect = window.frameElement.getBoundingClientRect();
     const iframeX = iframeRect.left;
     const iframeY = iframeRect.top;
-    return [e.offsetX, e.offsetY];
+    return [e.offsetX , e.offsetY];
 }
 class circle_info {
     constructor(r, c, n) {
