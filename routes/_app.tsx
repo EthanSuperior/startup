@@ -13,9 +13,7 @@ export default function App({ Component }: AppProps) {
         <title>Otrio</title>
         <link rel="icon" href="favicon.ico" />
       </head>
-      <body
-    //    onLoad={setupDarkMode}
-       >
+      <body class='p-0'>
         <Header />
         <hr />
         <Component />
