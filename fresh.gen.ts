@@ -4,29 +4,33 @@
 
 import * as $0 from "./routes/_404.tsx";
 import * as $1 from "./routes/_app.tsx";
-import * as $2 from "./routes/index.tsx";
-import * as $3 from "./routes/leaderboard.tsx";
-import * as $4 from "./routes/play.tsx";
-import * as $5 from "./routes/rules.tsx";
-import * as $$0 from "./islands/Log.tsx";
-import * as $$1 from "./islands/Login.tsx";
-import * as $$2 from "./islands/Otrio.tsx";
-import * as $$3 from "./islands/Settings.tsx";
+import * as $2 from "./routes/_middleware.tsx";
+import * as $3 from "./routes/index.tsx";
+import * as $4 from "./routes/leaderboard.tsx";
+import * as $5 from "./routes/play.tsx";
+import * as $6 from "./routes/rules.tsx";
+import * as $$0 from "./islands/Joke.tsx";
+import * as $$1 from "./islands/Log.tsx";
+import * as $$2 from "./islands/Login.tsx";
+import * as $$3 from "./islands/Otrio.tsx";
+import * as $$4 from "./islands/Settings.tsx";
 
 const manifest = {
   routes: {
     "./routes/_404.tsx": $0,
     "./routes/_app.tsx": $1,
-    "./routes/index.tsx": $2,
-    "./routes/leaderboard.tsx": $3,
-    "./routes/play.tsx": $4,
-    "./routes/rules.tsx": $5,
+    "./routes/_middleware.tsx": $2,
+    "./routes/index.tsx": $3,
+    "./routes/leaderboard.tsx": $4,
+    "./routes/play.tsx": $5,
+    "./routes/rules.tsx": $6,
   },
   islands: {
-    "./islands/Log.tsx": $$0,
-    "./islands/Login.tsx": $$1,
-    "./islands/Otrio.tsx": $$2,
-    "./islands/Settings.tsx": $$3,
+    "./islands/Joke.tsx": $$0,
+    "./islands/Log.tsx": $$1,
+    "./islands/Login.tsx": $$2,
+    "./islands/Otrio.tsx": $$3,
+    "./islands/Settings.tsx": $$4,
   },
   baseUrl: import.meta.url,
 };

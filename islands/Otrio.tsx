@@ -14,6 +14,24 @@ let width = 3,
     deadMen: CircleInfo[] = [];
 const MAX_PLAYERS = 4;
 
+// 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4 7-dead
+// 000 00000->pos
+// move&(7 << 5)->states dead = 224
+// move&~(7 << 5)->place
+// opacity->float
+// Pieces => Uint8Array
+// LVL Data 0000 0000
+/*
+line_width = 4
+circle_gap = 5
+spacing = 20
+arc_pos = 11
+draw_offset = 32
+
+total width=64  width+.2
+*/
+const lol = new Uint8Array(22)
+lol.at(3)
 let line_width:number,
     circle_gap:number,
     spacing:number,
