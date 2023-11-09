@@ -1,5 +1,6 @@
 import { useEffect } from "preact/hooks";
 import { ScoreboardRow } from "../routes/leaderboard.tsx";
+import { ComponentProps } from "preact";
 let canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     input_players: HTMLInputElement,
@@ -14,7 +15,7 @@ let width = 3,
     lastMouseE: MouseEvent|null,
     deadMen: CircleInfo[] = [];
 const MAX_PLAYERS = 4;
-
+let user:string = '';
 // 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4 7-dead
 // 000 00000->pos
 // move&(7 << 5)->states dead = 224
@@ -31,8 +32,8 @@ draw_offset = 32
 
 total width=64  width+.2
 */
-const lol = new Uint8Array(22)
-lol.at(3)
+// const lol = new Uint8Array(22)
+// lol.at(3)
 let line_width:number,
     circle_gap:number,
     spacing:number,
@@ -65,9 +66,7 @@ function Initilize() {
 
 export function OnLoad() {
     Log('', 'move');
-    Log(`${getUsername()} started a game with themselves.......`);
-    const element = document.querySelector('span.user-name');
-    if (element) element.textContent = getUsername();
+    Log(`${user} started a game with themselves.......`);
     getSettings();
     gameOver = false;
     currentPlayer = currentPlayer % num_players;
@@ -130,10 +129,10 @@ function win_game() {
     gameOver = true;
     const txt = "Player " + (currentPlayer + 1) + " Wins!!";
     Log("Congrats!!! " + txt);
-    fetch('startup.evankchase.click/api/score', {
-        method: 'PUT',
+    fetch('https://startup.evankchase.click/api/score', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', },
-        body: JSON.stringify({"name":getUsername(),"wins":1,"games":1}), // Convert the data object to a JSON string
+        body: JSON.stringify({"name":user,"wins":1,"games":1}), // Convert the data object to a JSON string
     }).then(r => Log);
     ctx.fillStyle = colors[currentPlayer];
     ctx.strokeStyle = "#000";
@@ -156,10 +155,10 @@ function is_cats() {
 function cats_game() {
     lastMouseE = null;
     draw();
-    fetch('startup.evankchase.click/api/score', {
-        method: 'PUT',
+    fetch('https://startup.evankchase.click/api/score', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json', },
-        body: JSON.stringify({"name":getUsername(),"games":1}), // Convert the data object to a JSON string
+        body: JSON.stringify({"name":user,"games":1}), // Convert the data object to a JSON string
     }).then(r => Log);
     gameOver = true;
     const txt = "Nobody wins...";
@@ -333,9 +332,6 @@ function check_consecutive(rows: number[], cols: number[], playerColor: string):
     if (matches.reduce((p, c, i) => p | (c & (1 << i)), 0) == (1 << width) - 1) return true;
     return matches.reduce((p, c, i) => p | (c & (1 << (width - 1 - i))), 0) == (1 << width) - 1;
 }
-function getUsername(){return localStorage.getItem('username')??'';}
-
-
 class Player {
     id: number;
     pieces: Otrio[];
@@ -443,7 +439,12 @@ class Otrio {
         return null;
     }
 }
-export default function OtrioGame(){
+interface Props {
+    username:string;
+}
+
+export default function OtrioGame({username}:Props){
+    user = username;
     useEffect(()=>{
         Initilize();
         OnLoad();
