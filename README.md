@@ -74,6 +74,15 @@ application logic - The highlight and ranking number change based up the user's 
 Otrio Game - Added all the code for the otrio game, switched form doing GO and updated all documentation.
 
 ## Service deliverable
+For this delieveable I redid my entire website to use `Deno` rather than Node, as such its a little more jank than it was as I have not completly redid everything. And am in the process of rewriting the whole thing to use react better.
+
+But I do have working backend endpoints that receives scores and returns them, its cached on a local json so DB is soon.
+
+Node.js/Express HTTP service - I did a Deno/Fresh website, HTTP routes work to give you the pages, its all done with react/TypeScript!
+Static middleware for frontend - It logs time it took to fetch a request as a header, and console.logs it to the server!
+Calls to third party endpoints - I have random CS jokes displayed at the bottom, I'll probably remove them if thats okay....
+Backend service endpoints - Endpoint for Scores both POST/GET Login is not yet added, I will do such with the DB 
+Frontend calls service endpoints - I did this using the fetch function to get and post for the scores.
 
 ## DB deliverable
 
