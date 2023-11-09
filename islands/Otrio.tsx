@@ -1,4 +1,5 @@
 import { useEffect } from "preact/hooks";
+import { ScoreboardRow } from "../routes/leaderboard.tsx";
 let canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     input_players: HTMLInputElement,
@@ -129,14 +130,11 @@ function win_game() {
     gameOver = true;
     const txt = "Player " + (currentPlayer + 1) + " Wins!!";
     Log("Congrats!!! " + txt);
-    fetch("scoreboard.json")
-    .then((response) => response.json())
-    .then((data) => {
-        const username = getUsername();
-        data[username]??={"name":username,"wins":0,"losses":0, "games":0};
-        data[username].wins++;
-        data[username].games++;
-    });
+    fetch('/api/score', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify({"name":getUsername(),"wins":1,"games":1}), // Convert the data object to a JSON string
+    }).then(r => Log);
     ctx.fillStyle = colors[currentPlayer];
     ctx.strokeStyle = "#000";
     ctx.lineWidth = line_width / 2;
@@ -158,14 +156,11 @@ function is_cats() {
 function cats_game() {
     lastMouseE = null;
     draw();
-    fetch("scoreboard.json")
-    .then((response) => response.json())
-    .then((data) => {
-        const username = getUsername();
-        data[username]??={"name":username,"wins":0,"losses":0, "games":0};
-        data[username].games++;
-        Log(''+data[username]);
-    });
+    fetch('/api/score', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', },
+        body: JSON.stringify({"name":getUsername(),"games":1}), // Convert the data object to a JSON string
+    }).then(r => Log);
     gameOver = true;
     const txt = "Nobody wins...";
     Log("Cats Game " + txt);

@@ -6,7 +6,7 @@ export const handler: Handlers = {
     async GET() {
         return new Response(await Deno.readTextFile('scoreboard.json'));
     },
-    async POST(req) {
+    async PUT(req) {
         const scoreFile = Deno.readTextFile('scoreboard.json');
         const result:ScoreboardRow = JSON.parse( await req.text());
         const scores:ScoreboardRow[] = JSON.parse(await scoreFile);
@@ -17,6 +17,6 @@ export const handler: Handlers = {
             scores[i].losses = (scores[i].losses ?? 0) + (result.losses ?? 0);
             scores[i].games = (scores[i].games ?? 0) + (result.games ?? 0);
         }
-        return new Response(JSON.stringify(scores));
+        return new Response(JSON.stringify(scores[i]));
     },
 }
