@@ -27,12 +27,6 @@ export default function Header() {
           <ul class="flex flex-col font-medium mt-4 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-transparent dark:bg-gray-800 md:dark:bg-transparent dark:border-gray-700">
             
             {menus.map((menu) => (
-              // {/* <a href={menu.href} class="block py-2 pl-3 pr-4 " aria-current="page">Home</a> */}
-              //   <a
-              //     href=
-              //     class={"text-gray-500 hover:text-gray-700 py-1 border-gray-500 [data-current]:{font-bold border-b-2}"}>
-                  
-              //   </a>
                 <li>
                   <a href={menu.href} class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700
                   md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent
