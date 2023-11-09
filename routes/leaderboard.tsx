@@ -12,7 +12,7 @@ export interface ScoreboardRow {
 }
 
 export default async function Leaderboard(_req: Request, ctx: RouteContext){
-    const resp = await (await fetch('/api/score')).text();
+    const resp = await (await fetch(`startup.evankchase.click/api/score`)).text();
     const data: ScoreboardRow[] = (JSON.parse(resp));
     return (
         <main class='flex items-center justify-center mt-6'>

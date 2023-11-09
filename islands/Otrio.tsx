@@ -130,7 +130,7 @@ function win_game() {
     gameOver = true;
     const txt = "Player " + (currentPlayer + 1) + " Wins!!";
     Log("Congrats!!! " + txt);
-    fetch('/api/score', {
+    fetch('startup.evankchase.click/api/score', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({"name":getUsername(),"wins":1,"games":1}), // Convert the data object to a JSON string
@@ -156,7 +156,7 @@ function is_cats() {
 function cats_game() {
     lastMouseE = null;
     draw();
-    fetch('/api/score', {
+    fetch('startup.evankchase.click/api/score', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({"name":getUsername(),"games":1}), // Convert the data object to a JSON string
