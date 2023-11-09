@@ -5,7 +5,7 @@ export default function Joke() {
   const jokeOpening = useSignal("");
   const jokePunch = useSignal("");
   const rotation = useSignal('rotateY(0deg)');
-
+  const jokeRate = 20 * 1000
   function revealJoke() {
     let punch = ''
     fetch("https://backend-omega-seven.vercel.app/api/getjoke")
@@ -18,20 +18,20 @@ export default function Joke() {
     setTimeout(() => {
       jokePunch.value = punch;
       rotation.value = "rotateY(180deg)";
-    }, 1500);
+    }, 2 * jokeRate / 3);
   }
   useEffect(() => {
     revealJoke();
-    const intervalId = setInterval(revealJoke, 3000);
+    const intervalId = setInterval(revealJoke, jokeRate);
     return () => {
       clearInterval(intervalId);
     };
   }, []);
   return (
-    <div class="group relative flex items-center justify-center h-full text">
-      <div class="relative h-full duration-1000" style={{ transformStyle: "preserve-3d", transform:`${rotation}`}}>
-        <div class="absolute h-full" style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>{jokePunch}</div>
-        <div class="absolute h-full" style={{ backfaceVisibility: "hidden" }} >{jokeOpening}</div>
+    <div class="group relative flex items-center justify-center h-full text mt-2">
+      <div class="relative w-full h-full duration-1000" style={{ transformStyle: "preserve-3d", transform:`${rotation}`}}>
+        <div class="absolute inset-0 flex items-center justify-center" style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}>{jokePunch}</div>
+        <div class="absolute inset-0 flex items-center justify-center" style={{ backfaceVisibility: "hidden" }} >{jokeOpening}</div>
       </div>
     </div>
   );
