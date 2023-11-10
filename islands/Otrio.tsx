@@ -1,6 +1,4 @@
 import { useEffect } from "preact/hooks";
-import { ScoreboardRow } from "../routes/leaderboard.tsx";
-import { ComponentProps } from "preact";
 let canvas: HTMLCanvasElement,
     ctx: CanvasRenderingContext2D,
     input_players: HTMLInputElement,
@@ -15,7 +13,7 @@ let width = 3,
     lastMouseE: MouseEvent|null,
     deadMen: CircleInfo[] = [];
 const MAX_PLAYERS = 4;
-let user:string = '';
+let user = '';
 // 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4 7-dead
 // 000 00000->pos
 // move&(7 << 5)->states dead = 224
