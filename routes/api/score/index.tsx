@@ -10,17 +10,22 @@ export const handler: Handlers = {
         return new Response(JSON.stringify(results));
     },
     async POST(req, _ctx) {
-        const scoreFile = Deno.readTextFile('scoreboard.json');
-        const result:ScoreboardRow = JSON.parse( await req.text());
-        const scores:ScoreboardRow[] = JSON.parse(await scoreFile);
-        const i = scores.findIndex((r=>r.name==result.name));
-        if (i == -1) scores.push(result);
-        else {
-            scores[i].wins = (scores[i].wins ?? 0) + (result.wins ?? 0);
-            scores[i].losses = (scores[i].losses ?? 0) + (result.losses ?? 0);
-            scores[i].games = (scores[i].games ?? 0) + (result.games ?? 0);
-        }
-        await Deno.writeTextFile('scoreboard.json', JSON.stringify(scores));
-        return new Response(JSON.stringify(scores[i]));
-    },
+        // Mongo Collection to use
+        const scores = db.collection("scores");
+
+        const result: ScoreboardRow = JSON.parse(await req.text());
+
+        // Check if the document with the given name already exists
+        const filter = { name: result.name };
+        const update = {
+            $inc: {
+                wins: result.wins ?? 0,
+                losses: result.losses ?? 0,
+                games: result.games ?? 0,
+            },
+        };
+        const { modifiedCount } = await scores.updateOne(filter, update);
+        if (modifiedCount === 0) await scores.insertOne(result);
+        return new Response();
+    }
 }
