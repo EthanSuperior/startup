@@ -85,6 +85,13 @@ Backend service endpoints - Endpoint for Scores both POST/GET Login is not yet a
 Frontend calls service endpoints - I did this using the fetch function to get and post for the scores.
 
 ## DB deliverable
+For this deliverable I replaced my local JSON with the database.
+
+MongoDB Atlas database created - done!
+Endpoints for data - My my endpoints now process the data and send it to Mongo.
+Stores data in MongoDB - done!
+
+Log in will be done shortly with the next deliverable...
 
 ## Login deliverable
 
