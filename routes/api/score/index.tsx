@@ -1,10 +1,13 @@
 import { Handlers } from "$fresh/server.ts";
 import { ScoreboardRow } from "../../leaderboard.tsx";
-
+import db from "../../../database/database.tsx";
 
 export const handler: Handlers = {
     async GET() {
-        return new Response(await Deno.readTextFile('scoreboard.json'));
+        const scores = db.collection("scores").find();
+        const results = [];
+        for await (const v of scores) results.push(v);
+        return new Response(JSON.stringify(results));
     },
     async POST(req, _ctx) {
         const scoreFile = Deno.readTextFile('scoreboard.json');

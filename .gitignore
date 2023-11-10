@@ -10,4 +10,4 @@ commands.md
 
 # Fresh build directory
 _fresh/
-dbConfig.tsx
+database/dbConfig.tsx
