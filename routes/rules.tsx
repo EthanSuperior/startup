@@ -1,6 +1,8 @@
 export default function Rules(){
+
+	//container padding: 0px 15px 0px 15px
     return (
-        <main class="container mt-5">
+        <main class="mt-5">
             <h1 class="text-4xl font-semibold mb-6 text-center">Otrio</h1>
     
             <p class="text-lg leading-relaxed mb-6">

@@ -3,8 +3,27 @@ import Footer from "../components/Footer.tsx";
 import Header from "../components/Header.tsx";
 
 export default function App({ Component }: AppProps) {
+  const fontStyles = `
+  @import url("https://fonts.googleapis.com/css?family=Open+Sans");
+  body {
+    padding: 50px;
+    font-family: "Open Sans", sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 100;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+  }
+  a {
+    text-decoration: none;
+    color: rgba(34, 34, 34, 0.8);
+  }
+  a:hover, a :focus {
+    color: black;
+  }
+  `;
   return (
-    <html>
+    <html lang="en">
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,6 +31,7 @@ export default function App({ Component }: AppProps) {
         <link rel="stylesheet" href="main.css" />
         <title>Otrio</title>
         <link rel="icon" href="favicon.ico" />
+        <style>{{fontStyles}}</style>
       </head>
       <body class='p-0'>
         <Header />

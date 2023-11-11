@@ -4,9 +4,11 @@ import PlaySettings from "../islands/Settings.tsx";
 export default function PlayOtrio(req:Request) {
     const url = new URL(req.url);
     const username = url.searchParams.get("q") ?? '';
+
+	//container padding: 0px 15px 0px 15px
     return (
         <>
-        <main class="container mx-auto">
+        <main class="mx-auto">
             <div class="grid grid-cols-8 gap-4">
                 <div class="col-span-6">
                     <div class="players text-center">
