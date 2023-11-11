@@ -1,7 +1,6 @@
 import { useEffect } from "preact/hooks";
 import CircleSet, { CircleColor, CircleProps } from "../components/CicleSet.tsx";
 let width = 3,
-    background_color = "#FED06B",
     num_players = 0,
     saveCorpses = true,
     deadMen: CircleInfo[] = [];
@@ -25,11 +24,7 @@ total width=64  width+.2
 */
 // const lol = new Uint8Array(22)
 // lol.at(3)
-let line_width:number,
-    circle_gap:number,
-    spacing:number,
-    draw_offset:number,
-    empty_color = "#44220033";
+let spacing:number;
 const colors:string[] = ["#9fff37", "#fe122e", "#3d03b5", "#9f009f"],
     corpse_colors = ["#6cd10066", "#a7011466", "#1b005266", "#38003866"]
 
@@ -54,16 +49,7 @@ let players: Player[],
     game: Otrio[][],
     currentPlayer = 0;
 
-function Initilize() {
-    Log("Johnny challenged Sammy");
-    const delay = (ms:number) => new Promise(res => setTimeout(res, ms));
-    setInterval(() => {
-        Log((Math.random()<.5)?"Johnny beat Sammy!!!":"Sammy beat Johnny!!!");
-        delay(1000+ Math.random()*2000)
-        Log("Johnny and Sammy started a rematch");
-        console.log('hey...');
-      }, (Math.random() * 3000) + 30000);
-}
+function Initilize() {}
 
 export function OnLoad() {
     Log('', 'move');
@@ -219,7 +205,7 @@ class Otrio {
 }
 
 export default function OtrioDevGame(){
-    let userSettings:GameSettings = {
+    const userSettings:GameSettings = {
         board: new Uint8Array(21),
         currPlayer: 0,
         playerColors: {
