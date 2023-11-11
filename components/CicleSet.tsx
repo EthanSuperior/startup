@@ -1,18 +1,19 @@
-interface StrokeColor{
+export interface CircleColor{
     stroke:string,
     opacity:number
 }
-interface CicleProps {
-    i:number,
+interface CircleProps {
+    i?:number,
     x:number,
     y:number,
-    c: StrokeColor,
+    c: CircleColor,
     onChange: ChangeFunction
 }
-type ChangeFunction = (index: number, color: StrokeColor) => void;
-export function ChangeCircle(props:CicleProps){
+type ChangeFunction = (key: number) => void;
+export function ChangeCircle(props:CircleProps){
+    props.i ??= 0;
     function key():number {
-        return (props.x + props.y * 3) * 3 + props.i;
+        return (props.x + props.y * 3) * 3 + (props.i ?? 0);
     }
     return (
       <circle
@@ -24,15 +25,11 @@ export function ChangeCircle(props:CicleProps){
         strokeWidth="1"
         strokeOpacity={props.c.opacity}
         fill="none"
-        onClick={() => props.onChange(props.i, {stroke:'red', opacity:0.5})}
+        onClick={() => props.onChange(key())}
       />
     );
 }
 
-export default function CircleSet({c, onChange }:CicleProps){
-    const circles = [0, 1, 2].map((i) => (
-        <></>
-    //   <ChangeCircle i={i} c={c} onChange={onChange} />
-    ));
-    return <g>{circles}</g>;
+export default function CircleSet(props:CircleProps){
+    return <g>{[0, 1, 2].map(i => (<ChangeCircle {...props} i={i} />))}</g>;
 }
