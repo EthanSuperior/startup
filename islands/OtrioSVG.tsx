@@ -1,5 +1,5 @@
 import { useEffect } from "preact/hooks";
-import CircleSet, { CircleColor } from "../components/CicleSet.tsx";
+import CircleSet, { CircleColor, CircleProps } from "../components/CicleSet.tsx";
 let width = 3,
     background_color = "#FED06B",
     num_players = 0,
@@ -239,16 +239,17 @@ export default function OtrioDevGame(){
         Initilize();
         OnLoad();
     });
-    function swapColors(){
-
+    function swapColors(this:CircleProps,i:number){
+        console.log(this);
+        this.c.stroke = userSettings.playerColors.player1;
     }
     const defaultColor:CircleColor = {
         stroke:userSettings.defaultColors.boardSecondary,
         opacity: 0x44,
     };
     return (
-        <svg>
-            {[0, 1, 2].flatMap(x=>[0, 1, 2].map(y=><CircleSet x={x} y={y} c={defaultColor} onChange={swapColors}/>))}
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 42 42">
+            {[0, 1, 2].flatMap(y=>[0, 1, 2].map(x=><CircleSet x={x} y={y} c={defaultColor} onChange={swapColors}/>))}
         </svg>
     )
 }

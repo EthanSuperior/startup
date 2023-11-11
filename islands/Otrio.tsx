@@ -58,7 +58,6 @@ function Initilize() {
         Log((Math.random()<.5)?"Johnny beat Sammy!!!":"Sammy beat Johnny!!!");
         delay(1000+ Math.random()*2000)
         Log("Johnny and Sammy started a rematch");
-        console.log('hey...');
       }, (Math.random() * 3000) + 30000);
 }
 

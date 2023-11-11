@@ -1,8 +1,10 @@
+import { useRef } from "preact/hooks";
+
 export interface CircleColor{
     stroke:string,
     opacity:number
 }
-interface CircleProps {
+export interface CircleProps {
     i?:number,
     x:number,
     y:number,
@@ -25,7 +27,7 @@ export function ChangeCircle(props:CircleProps){
         strokeWidth="1"
         strokeOpacity={props.c.opacity}
         fill="none"
-        onClick={() => props.onChange(key())}
+        onClick={function(){props.onChange(key())}}
       />
     );
 }
