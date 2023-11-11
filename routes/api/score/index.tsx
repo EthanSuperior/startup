@@ -4,10 +4,8 @@ import db from "../../../database/database.tsx";
 
 export const handler: Handlers = {
     async GET() {
-        const scores = db.collection("scores").find();
-        const results = [];
-        for await (const v of scores) results.push(v);
-        return new Response(JSON.stringify(results));
+        const results = await db.collection("scores").find({}).toArray();
+        return new Response(JSON.stringify(results), { headers: { "Content-Type": "application/json" } });
     },
     async POST(req, _ctx) {
         // Mongo Collection to use
