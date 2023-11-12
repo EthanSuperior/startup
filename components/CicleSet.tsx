@@ -11,23 +11,24 @@ export interface CircleProps {
     c: CircleColor,
     onChange: ChangeFunction
 }
-type ChangeFunction = (key: number) => void;
+type ChangeFunction = (this:SVGCircleElement, key: number) => void;
 export function ChangeCircle(props:CircleProps){
-    props.i ??= 0;
+    const circleRef = useRef<SVGCircleElement>(null);
     function key():number {
         return (props.x + props.y * 3) * 3 + (props.i ?? 0);
     }
     return (
       <circle
+        ref={circleRef}
         key={key()}
         cx={7 + 14*props.x}
         cy={7 + 14*props.y}
-        r={1.5 + props.i * 1.25}
+        r={1.5 + props.i! * 1.25}
         stroke={props.c.stroke}
         strokeWidth="1"
         strokeOpacity={props.c.opacity}
         fill="none"
-        onClick={function(){props.onChange(key())}}
+        onClick={()=>props.onChange.call(circleRef.current!, key())}
       />
     );
 }
