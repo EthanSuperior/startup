@@ -6,9 +6,9 @@ export default function Joke() {
   const jokePunch = useSignal("");
   const rotation = useSignal('rotateY(0deg)');
   const jokeRate = 20 * 1000
-  function revealJoke() {
+  async function revealJoke() {
     let punch = ''
-    fetch("https://backend-omega-seven.vercel.app/api/getjoke")
+    await fetch("https://backend-omega-seven.vercel.app/api/getjoke")
       .then((r) => r.json())
       .then((d) => {
         jokeOpening.value = d[0].question;

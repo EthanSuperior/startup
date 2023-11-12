@@ -28,7 +28,6 @@ export default function App({ Component }: AppProps) {
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="Put your description here."/>
-        <link rel="stylesheet" href="main.css" />
         <title>Otrio</title>
         <link rel="icon" href="favicon.ico" />
         <style>{{fontStyles}}</style>
