@@ -94,6 +94,10 @@ Stores data in MongoDB - done!
 Log in will be done shortly with the next deliverable...
 
 ## Login deliverable
+User registration - Creates a new account in the database.
+Existing user - Stores the scores if the user already exists, maybe will add settings soon...
+Use MongoDB to store credentials - Stores both user and their scores.
+Restricts functionality - You cannot do play until you have logged in, it redirects you
 
 ## WebSocket deliverable
 
