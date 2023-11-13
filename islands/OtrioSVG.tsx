@@ -88,7 +88,7 @@ export default function OtrioDevGame(){
         opacity: 0x44,
     };
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 42 42">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 32 32">
             {[0, 1, 2].flatMap(y=>[0, 1, 2].map(x=>
             <CircleSet x={x} y={y} c={defaultColor} onChange={swapColors}/>
             ))}

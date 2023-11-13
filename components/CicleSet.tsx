@@ -21,8 +21,8 @@ export function ChangeCircle(props:CircleProps){
       <circle
         ref={circleRef}
         key={key()}
-        cx={7 + 14*props.x}
-        cy={7 + 14*props.y}
+        cx={6 + 10*props.x}
+        cy={6 + 10*props.y}
         r={1.5 + props.i! * 1.25}
         stroke={props.c.stroke}
         strokeWidth="1"
