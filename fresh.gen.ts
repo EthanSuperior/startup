@@ -2,16 +2,19 @@
 // This file SHOULD be checked into source version control.
 // This file is automatically updated during development when running `dev.ts`.
 
-import * as $0 from "./routes/_404.tsx";
-import * as $1 from "./routes/_app.tsx";
-import * as $2 from "./routes/_middleware.tsx";
-import * as $3 from "./routes/api/_middleware.tsx";
-import * as $4 from "./routes/api/score/index.tsx";
-import * as $5 from "./routes/devotrio.tsx";
-import * as $6 from "./routes/index.tsx";
-import * as $7 from "./routes/leaderboard.tsx";
-import * as $8 from "./routes/play.tsx";
-import * as $9 from "./routes/rules.tsx";
+import * as $0 from "./routes/(needsAuth)/_middleware.tsx";
+import * as $1 from "./routes/(needsAuth)/api/score/index.tsx";
+import * as $2 from "./routes/(needsAuth)/play.tsx";
+import * as $3 from "./routes/_404.tsx";
+import * as $4 from "./routes/_app.tsx";
+import * as $5 from "./routes/_middleware.tsx";
+import * as $6 from "./routes/api/_middleware.tsx";
+import * as $7 from "./routes/api/score/index.tsx";
+import * as $8 from "./routes/devotrio.tsx";
+import * as $9 from "./routes/index.tsx";
+import * as $10 from "./routes/leaderboard.tsx";
+import * as $11 from "./routes/rules.tsx";
+import * as $12 from "./routes/user/login.tsx";
 import * as $$0 from "./islands/Joke.tsx";
 import * as $$1 from "./islands/Log.tsx";
 import * as $$2 from "./islands/Login.tsx";
@@ -21,16 +24,19 @@ import * as $$5 from "./islands/Settings.tsx";
 
 const manifest = {
   routes: {
-    "./routes/_404.tsx": $0,
-    "./routes/_app.tsx": $1,
-    "./routes/_middleware.tsx": $2,
-    "./routes/api/_middleware.tsx": $3,
-    "./routes/api/score/index.tsx": $4,
-    "./routes/devotrio.tsx": $5,
-    "./routes/index.tsx": $6,
-    "./routes/leaderboard.tsx": $7,
-    "./routes/play.tsx": $8,
-    "./routes/rules.tsx": $9,
+    "./routes/(needsAuth)/_middleware.tsx": $0,
+    "./routes/(needsAuth)/api/score/index.tsx": $1,
+    "./routes/(needsAuth)/play.tsx": $2,
+    "./routes/_404.tsx": $3,
+    "./routes/_app.tsx": $4,
+    "./routes/_middleware.tsx": $5,
+    "./routes/api/_middleware.tsx": $6,
+    "./routes/api/score/index.tsx": $7,
+    "./routes/devotrio.tsx": $8,
+    "./routes/index.tsx": $9,
+    "./routes/leaderboard.tsx": $10,
+    "./routes/rules.tsx": $11,
+    "./routes/user/login.tsx": $12,
   },
   islands: {
     "./islands/Joke.tsx": $$0,

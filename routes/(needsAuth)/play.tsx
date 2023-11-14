@@ -1,6 +1,6 @@
-import Log from "../islands/Log.tsx";
-import OtrioGame from "../islands/Otrio.tsx";
-import PlaySettings from "../islands/Settings.tsx";
+import Log from "../../islands/Log.tsx";
+import OtrioGame from "../../islands/Otrio.tsx";
+import PlaySettings from "../../islands/Settings.tsx";
 export default function PlayOtrio(req:Request) {
     const url = new URL(req.url);
     const username = url.searchParams.get("q") ?? '';
