@@ -7,6 +7,7 @@ export const handler: Handlers = {
     async POST(req, _ctx) {
         // Mongo Collection to use
         const res = new Response(null);
+        console.log(req);
         const result: LoginRequest = await req.json();
         let user = await getUser(result) as User|null;
         if (user) {

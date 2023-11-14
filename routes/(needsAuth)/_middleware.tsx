@@ -8,7 +8,7 @@ export async function handler(req: Request, ctx: MiddlewareHandlerContext) {
   if (req.method == "GET") return new Response("", 
   {
     status: 307,
-    headers: { Location: "/my/new/relative/path" },
+    headers: { Location: "/" },
   });
   return new Response(null, {
     status: 401,
