@@ -5,7 +5,11 @@ import { getUserByToken } from "../../database/database.tsx";
 export async function handler(req: Request, ctx: MiddlewareHandlerContext) {
   const { authToken } = await getCookies(req.headers);
   if (authToken && await getUserByToken(authToken)) return await ctx.next();
-  if (req.method == "GET") return Response.redirect("/", 307);
+  if (req.method == "GET") return new Response("", 
+  {
+    status: 307,
+    headers: { Location: "/my/new/relative/path" },
+  });
   return new Response(null, {
     status: 401,
     statusText: "Unauthorized access"
