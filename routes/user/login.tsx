@@ -5,26 +5,38 @@ import { LoginRequest, User, createUser, getUser } from "../../database/database
 
 export const handler: Handlers = {
     async POST(req, _ctx) {
+        console.log('a')
         // Mongo Collection to use
-        const res = new Response(null);
-        console.log(req);
-        const result: LoginRequest = await req.json();
+        console.log(req, _ctx);
+        const result: LoginRequest = JSON.parse(await req.text());
+        console.log(result)
         let user = await getUser(result) as User|null;
         if (user) {
+            console.log('User Exists');
             if (!await bcrypt.compare(result.password, user.password)) {
+                console.log("Wrong PWd");
                 return new Response(null, {
                     status: 401,
                     statusText: "Unauthorized"
                 });
             }
         } else user = await createUser(result);
-        setCookie(res.headers, {
+        const headers = new Headers();
+        headers.set("location", "/play");
+        const url = new URL(req.url);
+        setCookie(headers, {
             name: "authToken",
             value: user.token,
             secure: true,
+            maxAge: 1209600,
             httpOnly: true,
             sameSite: 'Strict',
+            domain: url.hostname,
         });
-        return res;
+        console.log(user, headers);
+        return new Response(null, {
+          status: 303,
+          headers,
+        });
     },
 }

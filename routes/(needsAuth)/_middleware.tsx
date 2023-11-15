@@ -1,15 +1,23 @@
-import { Handlers, MiddlewareHandlerContext } from "$fresh/server.ts";
+import { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { getCookies } from "$std/http/cookie.ts"
 import { getUserByToken } from "../../database/database.tsx";
 
-export async function handler(req: Request, ctx: MiddlewareHandlerContext) {
-  const { authToken } = await getCookies(req.headers);
+
+export const handler = [
+  authenticate,
+];
+
+async function authenticate (
+  req: Request,
+  ctx: MiddlewareHandlerContext,
+): Promise<Response> {
+  const cookies = await getCookies(req.headers);
+  const { authToken, ...rest} = cookies;
+  console.log(authToken, rest, cookies, req)
   if (authToken && await getUserByToken(authToken)) return await ctx.next();
-  if (req.method == "GET") return new Response("", 
-  {
-    status: 307,
-    headers: { Location: "/" },
-  });
+  const url = new URL(req.url);
+  url.pathname = "/";
+  if (req.method == "GET") return Response.redirect(url, 307);
   return new Response(null, {
     status: 401,
     statusText: "Unauthorized access"
