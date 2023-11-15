@@ -11,7 +11,7 @@ async function authenticate (
   req: Request,
   ctx: MiddlewareHandlerContext,
 ): Promise<Response> {
-  const cookies = await getCookies(req.headers);
+  const cookies = getCookies(req.headers);
   const { authToken, ...rest} = cookies;
   console.log(authToken, rest, cookies, req)
   if (authToken && await getUserByToken(authToken)) return await ctx.next();

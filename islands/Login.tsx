@@ -11,14 +11,15 @@ export default function Login() {
       username: nameIn.current?.value ??"ERROR",
       password: passwordIn.current?.value ??"ERROR",
     };
-
-    await fetch('/user/login', {
+    const res = await fetch('/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(formData),
-    });
+    })
+    e.preventDefault();
+    // if(res.ok) self.location.href = "/play";
   };
 
   return (

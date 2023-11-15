@@ -5,14 +5,9 @@ import { LoginRequest, User, createUser, getUser } from "../../database/database
 
 export const handler: Handlers = {
     async POST(req, _ctx) {
-        console.log('a')
-        // Mongo Collection to use
-        console.log(req, _ctx);
         const result: LoginRequest = JSON.parse(await req.text());
-        console.log(result)
         let user = await getUser(result) as User|null;
         if (user) {
-            console.log('User Exists');
             if (!await bcrypt.compare(result.password, user.password)) {
                 console.log("Wrong PWd");
                 return new Response(null, {
@@ -27,16 +22,10 @@ export const handler: Handlers = {
         setCookie(headers, {
             name: "authToken",
             value: user.token,
-            secure: true,
             maxAge: 1209600,
-            httpOnly: true,
-            sameSite: 'Strict',
-            domain: url.hostname,
+            sameSite: 'Lax',
+            path: "/"
         });
-        console.log(user, headers);
-        return new Response(null, {
-          status: 303,
-          headers,
-        });
+        return new Response(null, {headers});
     },
 }
