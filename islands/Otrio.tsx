@@ -128,6 +128,7 @@ function win_game() {
     Log("Congrats!!! " + txt);
     const url = new URL(self.location.href);
     url.pathname = "/api/score";
+    console.log(url, url.href, url.toString());
     fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },

@@ -11,6 +11,7 @@ async function authenticate (
   req: Request,
   ctx: MiddlewareHandlerContext,
 ): Promise<Response> {
+  if (req.method == "GET" && req.url.endsWith("/score")) return await ctx.next();
   const { authToken } = getCookies(req.headers);
   if (authToken && await getUserByToken(authToken)) return await ctx.next();
   const url = new URL(req.url);
