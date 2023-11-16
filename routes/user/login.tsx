@@ -6,10 +6,7 @@ import { LoginRequest, User, createUser, getUser } from "../../database/database
 export const handler: Handlers = {
     async POST(req, _ctx) {
         const data = await req.formData();
-        console.log(data);
         const result: LoginRequest = { username:data.get('username')!.toString(), password:data.get('password')!.toString()};
-        console.log(result);
-        // JSON.parse(await req.text());
         let user = await getUser(result) as User|null;
         if (user) {
             if (!await bcrypt.compare(result.password, user.password)) {
@@ -21,6 +18,7 @@ export const handler: Handlers = {
             }
         } else user = await createUser(result);
         const headers = new Headers();
+        headers.set("location", "/play");
         setCookie(headers, {
             name: "authToken",
             value: user.token,
@@ -28,6 +26,6 @@ export const handler: Handlers = {
             sameSite: 'Lax',
             path: "/"
         });
-        return new Response(null, {headers});
+        return new Response(null, {status:303, headers});
     },
 }
