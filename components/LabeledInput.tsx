@@ -14,10 +14,10 @@ const LabeledInput = forwardRef((props: JSX.HTMLAttributes<HTMLInputElement>, re
         <label for={props.id} class="block text-gray-600 font-medium">{capitalizeFirstLetter(props.id)}</label>
       <input
         ref={ref}
+        name={props.id}
         {...props}
         disabled={!IS_BROWSER || props.disabled}
-        class={`block w-full border rounded-md py-2 px-3 text-gray-700 mt-1 focus:ring focus:ring-indigo-300 focus:outline-none"
-        ${props.class ?? ""}`}
+        class={`block w-full border rounded-md py-2 px-3 text-gray-700 mt-1 focus:ring focus:ring-indigo-300 focus:outline-none ${props.class ?? ""}`}
       />
     </div>
   );

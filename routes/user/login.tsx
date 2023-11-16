@@ -5,7 +5,11 @@ import { LoginRequest, User, createUser, getUser } from "../../database/database
 
 export const handler: Handlers = {
     async POST(req, _ctx) {
-        const result: LoginRequest = JSON.parse(await req.text());
+        const data = await req.formData();
+        console.log(data);
+        const result: LoginRequest = { username:data.get('username')!.toString(), password:data.get('password')!.toString()};
+        console.log(result);
+        // JSON.parse(await req.text());
         let user = await getUser(result) as User|null;
         if (user) {
             if (!await bcrypt.compare(result.password, user.password)) {
