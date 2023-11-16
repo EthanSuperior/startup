@@ -17,8 +17,6 @@ export const handler: Handlers = {
             }
         } else user = await createUser(result);
         const headers = new Headers();
-        headers.set("location", "/play");
-        const url = new URL(req.url);
         setCookie(headers, {
             name: "authToken",
             value: user.token,

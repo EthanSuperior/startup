@@ -126,7 +126,9 @@ function win_game() {
     gameOver = true;
     const txt = "Player " + (currentPlayer + 1) + " Wins!!";
     Log("Congrats!!! " + txt);
-    fetch('https://startup.evankchase.click/api/score', {
+    const url = new URL(self.location.href);
+    url.pathname = "/api/score";
+    fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({"name":user,"wins":1,"games":1}), // Convert the data object to a JSON string
@@ -152,7 +154,9 @@ function is_cats() {
 function cats_game() {
     lastMouseE = null;
     draw();
-    fetch('https://startup.evankchase.click/api/score', {
+    const url = new URL(self.location.href);
+    url.pathname = "/api/score";
+    fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({"name":user,"games":1}), // Convert the data object to a JSON string

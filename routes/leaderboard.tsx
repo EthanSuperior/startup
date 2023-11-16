@@ -11,8 +11,10 @@ export interface ScoreboardRow {
     rank?: number;
 }
 
-export default async function Leaderboard(_req: Request, ctx: RouteContext){
-    const resp = await (await fetch(`https://startup.evankchase.click/api/score`)).text();
+export default async function Leaderboard(req: Request, ctx: RouteContext){
+    const url = new URL(req.url);
+    url.pathname = "/api/score";
+    const resp = await (await fetch(url)).text();
     const data: ScoreboardRow[] = (JSON.parse(resp));
     return (
         <main class='flex items-center justify-center mt-6'>

@@ -40,14 +40,18 @@ function Log(msg:string, _tag:string|null=null){
 function win_game() {
     const txt = "Player 1 Wins!!";
     Log("Congrats!!! " + txt);
-    fetch('https://startup.evankchase.click/api/score', {
+    const url = new URL(self.location.href);
+    url.pathname = "/api/score";
+    fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({"name":user,"wins":1,"games":1}), // Convert the data object to a JSON string
     }).then(r => Log);
 }
 function cats_game() {
-    fetch('https://startup.evankchase.click/api/score', {
+    const url = new URL(self.location.href);
+    url.pathname = "/api/score";
+    fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', },
         body: JSON.stringify({"name":user,"games":1}), // Convert the data object to a JSON string

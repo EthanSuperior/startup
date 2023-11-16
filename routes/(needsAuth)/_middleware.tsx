@@ -11,9 +11,7 @@ async function authenticate (
   req: Request,
   ctx: MiddlewareHandlerContext,
 ): Promise<Response> {
-  const cookies = getCookies(req.headers);
-  const { authToken, ...rest} = cookies;
-  console.log(authToken, rest, cookies, req)
+  const { authToken } = getCookies(req.headers);
   if (authToken && await getUserByToken(authToken)) return await ctx.next();
   const url = new URL(req.url);
   url.pathname = "/";
