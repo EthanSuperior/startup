@@ -1,4 +1,4 @@
-import { Handlers, RouteConfig } from "$fresh/server.ts";
+import { Handlers } from "$fresh/server.ts";
 import { ScoreboardRow } from "../../../leaderboard.tsx";
 import { scoreCollection, fetchScores } from "../../../../database/database.tsx";
 export const handler: Handlers = {

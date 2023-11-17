@@ -8,13 +8,12 @@ import * as $2 from "./routes/(needsAuth)/play.tsx";
 import * as $3 from "./routes/_404.tsx";
 import * as $4 from "./routes/_app.tsx";
 import * as $5 from "./routes/_middleware.tsx";
-import * as $6 from "./routes/api/_middleware.tsx";
-import * as $7 from "./routes/devotrio.tsx";
-import * as $8 from "./routes/index.tsx";
-import * as $9 from "./routes/leaderboard.tsx";
-import * as $10 from "./routes/rules.tsx";
-import * as $11 from "./routes/user/login.tsx";
-import * as $12 from "./routes/user/logout.tsx";
+import * as $6 from "./routes/devotrio.tsx";
+import * as $7 from "./routes/index.tsx";
+import * as $8 from "./routes/leaderboard.tsx";
+import * as $9 from "./routes/rules.tsx";
+import * as $10 from "./routes/user/login.tsx";
+import * as $11 from "./routes/user/logout.tsx";
 import * as $$0 from "./islands/Joke.tsx";
 import * as $$1 from "./islands/Log.tsx";
 import * as $$2 from "./islands/Login.tsx";
@@ -30,13 +29,12 @@ const manifest = {
     "./routes/_404.tsx": $3,
     "./routes/_app.tsx": $4,
     "./routes/_middleware.tsx": $5,
-    "./routes/api/_middleware.tsx": $6,
-    "./routes/devotrio.tsx": $7,
-    "./routes/index.tsx": $8,
-    "./routes/leaderboard.tsx": $9,
-    "./routes/rules.tsx": $10,
-    "./routes/user/login.tsx": $11,
-    "./routes/user/logout.tsx": $12,
+    "./routes/devotrio.tsx": $6,
+    "./routes/index.tsx": $7,
+    "./routes/leaderboard.tsx": $8,
+    "./routes/rules.tsx": $9,
+    "./routes/user/login.tsx": $10,
+    "./routes/user/logout.tsx": $11,
   },
   islands: {
     "./islands/Joke.tsx": $$0,
