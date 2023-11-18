@@ -5,7 +5,7 @@ export default function Joke() {
   const jokeOpening = useSignal("");
   const jokePunch = useSignal("");
   const rotation = useSignal('rotateY(0deg)');
-  const jokeRate = 20 * 1000
+  const jokeRate = 14 * 1000
   async function revealJoke() {
     let punch = ''
     await fetch("https://backend-omega-seven.vercel.app/api/getjoke")

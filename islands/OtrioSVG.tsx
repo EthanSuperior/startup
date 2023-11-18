@@ -1,7 +1,5 @@
 import { useEffect } from "preact/hooks";
-import {encode, decode} from "$std/encoding/hex.ts";
-import CircleSet, { ChangeCircle, CircleColor } from "../components/CicleSet.tsx";
-import { JSX } from "preact/jsx-runtime";
+import { ChangeCircle, CircleColor } from "../components/CicleSet.tsx";
 import { Signal, useSignal } from "@preact/signals";
 // 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4 7-dead
 // 000 00000->pos
@@ -154,11 +152,6 @@ export default function OtrioDevGame({roomId}:{roomId:string}){
         const {x,y,i} = { y: (idx / 3 | 0) / 3 | 0, x: (idx / 3 | 0) % 3, i: idx % 3 };
         return <ChangeCircle x={x} y={y} i={i} onChange={gameInfo.onClick} sig={v.sig}/>
     });
-    console.log(pieces);
-    // const elems  = [0, 1, 2].flatMap(y=>[0, 1, 2].map(x=>
-    //     <CircleSet x={x} y={y} c={defaultColor} onChange={gameInfo.onClick}/>
-    // ));
-    // gameInfo.elems = elems;
     useEffect(()=>{
         Initilize();
         OnLoad();
