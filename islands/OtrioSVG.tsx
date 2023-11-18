@@ -1,6 +1,8 @@
 import { useEffect } from "preact/hooks";
-import {encode, decode} from "$std/encoding/base64.ts";
-import CircleSet, { CircleColor, CircleProps } from "../components/CicleSet.tsx";
+import {encode, decode} from "$std/encoding/hex.ts";
+import CircleSet, { ChangeCircle, CircleColor } from "../components/CicleSet.tsx";
+import { JSX } from "preact/jsx-runtime";
+import { Signal, useSignal } from "@preact/signals";
 // 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4 7-dead
 // 000 00000->pos
 // move&(7 << 5)->states dead = 224
@@ -18,21 +20,28 @@ interface UserSettings {
 }
 
 class Slot {
-    color:string
-    state:number
-    key:number
-    constructor(move:number, color:string){
-        this.state = (move&224)>>5;
-        this.color = color;
-        this.key = move&31;
+    #state!:number
+    key!:number
+    sig:Signal<string>
+
+    constructor(move:number){
+        this.info = move;
+        this.sig = useSignal('#000000')
     }
-    get isOccupied(){
-        return this.state!=0
-    }
+    get isOccupied(){ return this.#state != 0 }
     get playerID(){
-        if (this.state == 0 || this.state == 7) return 0;
-        else return this.state
+        if (this.#state == 0 || this.#state == 7) return 0;
+        else return this.#state
     }
+    set info(move:number){
+        this.key = move&31;
+        this.#state = (move&224)>>5;
+    }
+    get info(){
+        return this.#state<<5 | this.key;
+    }
+    get state(){ return this.#state; }
+    set state(state:number){ this.#state = state; }
 }
 class ClientOtrio {
     board:Slot[]
@@ -47,33 +56,40 @@ class ClientOtrio {
     }
     constructor({player, ...def}:UserSettings, playerId:string){
         this.defaultColors = def;
-        this.board = Array.from({ length: 21 }, (_, idx) => new Slot(idx, this.defaultColors.secondary));
-        this.currPlayer = 0;
+        this.board = Array.from({ length: 27 }, (_, idx) => new Slot(idx));
+        this.currPlayer = 1;
         this.#playerID = playerId;
         this.playerColors= [
-            "#0000",
+            "#000000",
             "#9fff37",
             "#fe122e",
             "#3d03b5",
             "#9f009f",
         ];
     }
-
     receive(move:string){
-        const result = decode(move);
+        const result = parseInt(move, 16);
+        const idx = result&31
+        this.board[idx].info = result;
+        this.board[idx].sig.value = this.getColor();
+    }
+    send(move:number){
+        console.log(move.toString(16));
     }
     getColor():string {
-        console.log('Hey', this);
-        return this.playerColors[2];
+        return this.playerColors[this.currPlayer];
     }
     get onClick() {
-        function click(this:SVGCircleElement, i:number, getColor:()=>string) {
-            const color = getColor();
-            if(color) this.style.stroke = color;
+        function click(this:ClientOtrio, svg:SVGCircleElement, i:number) {
+            if(this.board[i].isOccupied) return;
+            this.currPlayer = (this.currPlayer === 1) ? 2 : 1
+            this.board[i].state = this.currPlayer;
+            svg.style.stroke = this.getColor();
+            this.send((this.currPlayer << 5) | i);
         }
-        const colorFunc = this.getColor.bind(this);
+        const colorFunc = click.bind(this);
         return function(this:SVGCircleElement, key:number) {
-            return click.bind(this)(key, colorFunc);
+            return colorFunc(this, key);
         };
     }
 }
@@ -130,19 +146,27 @@ export default function OtrioDevGame({roomId}:{roomId:string}){
         secondary: "#220033",
     }
     const gameInfo:ClientOtrio = new ClientOtrio(userSettings, playerId);
-    useEffect(()=>{
-        Initilize();
-        OnLoad();
-    });
     const defaultColor:CircleColor = {
         stroke:gameInfo.defaultColors.secondary,
         opacity: 0x44,
     };
+    const pieces = gameInfo.board.map((v,idx)=>{
+        const {x,y,i} = { y: (idx / 3 | 0) / 3 | 0, x: (idx / 3 | 0) % 3, i: idx % 3 };
+        return <ChangeCircle x={x} y={y} i={i} onChange={gameInfo.onClick} sig={v.sig}/>
+    });
+    console.log(pieces);
+    // const elems  = [0, 1, 2].flatMap(y=>[0, 1, 2].map(x=>
+    //     <CircleSet x={x} y={y} c={defaultColor} onChange={gameInfo.onClick}/>
+    // ));
+    // gameInfo.elems = elems;
+    useEffect(()=>{
+        Initilize();
+        OnLoad();
+        setTimeout(()=>gameInfo.receive("4D"), 2500);
+    });
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 32 32">
-            {[0, 1, 2].flatMap(y=>[0, 1, 2].map(x=>
-            <CircleSet x={x} y={y} c={defaultColor} onChange={gameInfo.onClick}/>
-            ))}
+        <svg xmlns="http://www.w3.org/2000/svg" width="min(100vw, 100vh)" height="min(100vw, 100vh)" viewBox="0 0 32 32">
+            {...pieces}
         </svg>
     )
 }
