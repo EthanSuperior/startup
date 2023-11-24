@@ -1,17 +1,18 @@
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
-import { getCookies } from "$std/http/cookie.ts"
+import { getCookies } from "$std/http/cookie.ts";
 import { getUserByToken } from "../../database/database.tsx";
-
 
 export const handler = [
   authenticate,
 ];
 
-async function authenticate (
+async function authenticate(
   req: Request,
   ctx: MiddlewareHandlerContext,
 ): Promise<Response> {
-  if (req.method == "GET" && req.url.endsWith("/score")) return await ctx.next();
+  if (req.method == "GET" && req.url.endsWith("/score")) {
+    return await ctx.next();
+  }
   const { authToken } = getCookies(req.headers);
   if (authToken && await getUserByToken(authToken)) return await ctx.next();
   const url = new URL(req.url);
@@ -19,11 +20,9 @@ async function authenticate (
   if (req.method == "GET") return Response.redirect(url, 307);
   return new Response(null, {
     status: 401,
-    statusText: "Unauthorized access"
+    statusText: "Unauthorized access",
   });
 }
-
-
 
 // async function cors(
 //   _req: Request,

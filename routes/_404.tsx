@@ -16,7 +16,6 @@ import { Head } from "$fresh/runtime.ts";
 //   return <div>Hello {props.params.name}</div>;
 // }
 
-
 export default function Error404() {
   return (
     <>

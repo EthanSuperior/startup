@@ -18,11 +18,9 @@ export async function fetchScores() {
   });
 }
 
-
-
 export const userCollection = db.collection("users");
 export const scoreCollection = db.collection("scores");
-export function getUser(info:LoginRequest) {
+export function getUser(info: LoginRequest) {
   return userCollection.findOne({ username: info.username });
 }
 
@@ -30,18 +28,18 @@ export function getUserByToken(token: string) {
   return userCollection.findOne({ token: token });
 }
 
-export interface LoginRequest{
-  username:string,
-  password:string
+export interface LoginRequest {
+  username: string;
+  password: string;
 }
-export interface User{
-  _id?:string,
-  username:string,
-  password:string,
-  token:string
+export interface User {
+  _id?: string;
+  username: string;
+  password: string;
+  token: string;
 }
 
-export async function createUser(info:LoginRequest):Promise<User> {
+export async function createUser(info: LoginRequest): Promise<User> {
   const user = {
     username: info.username,
     password: await bcrypt.hash(info.password, 10),

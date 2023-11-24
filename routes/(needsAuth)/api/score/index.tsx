@@ -1,10 +1,13 @@
 import { Handlers } from "$fresh/server.ts";
 import { ScoreboardRow } from "../../../leaderboard.tsx";
-import { scoreCollection, fetchScores } from "../../../../database/database.tsx";
+import {
+  fetchScores,
+  scoreCollection,
+} from "../../../../database/database.tsx";
 export const handler: Handlers = {
   async GET() {
-      return await fetchScores();
-    },
+    return await fetchScores();
+  },
   async POST(req, _ctx) {
     // Mongo Collection to use
 

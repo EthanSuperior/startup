@@ -11,6 +11,8 @@ async function logging(
   ctx: MiddlewareHandlerContext,
 ): Promise<Response> {
   const res = await ctx.next();
-  if (!req.url.includes('_frsh')) console.log(`${req.method} ${req.url} ${res.status}`);
+  if (!req.url.includes("_frsh")) {
+    console.log(`${req.method} ${req.url} ${res.status}`);
+  }
   return res;
 }
