@@ -4,7 +4,7 @@
 
 # Table of Contents
 
-[README](README.md)
-[COMMANDS](commands.md)
+[README](README.md) [COMMANDS](commands.md)
 
-Merge conflicts can be resolved via VSCode, dont have to bother with command-line
+Merge conflicts can be resolved via VSCode, dont have to bother with
+command-line

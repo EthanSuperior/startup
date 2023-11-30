@@ -1,7 +1,6 @@
 import { Db, MongoClient } from "npm:mongodb";
 import bcrypt from "npm:bcryptjs";
 import dbConfig from "./dbConfig.tsx";
-import { v4 as uuidv4 } from "npm:uuid";
 const uri =
   `mongodb+srv://${dbConfig.userName}:${dbConfig.password}@${dbConfig.hostname}?retryWrites=true&w=majority`;
 
@@ -43,7 +42,7 @@ export async function createUser(info: LoginRequest): Promise<User> {
   const user = {
     username: info.username,
     password: await bcrypt.hash(info.password, 10),
-    token: uuidv4(),
+    token: crypto.randomUUID(),
   };
   await userCollection.insertOne(user);
 

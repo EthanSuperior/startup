@@ -141,7 +141,7 @@ function cats_game() {
 }
 export default function OtrioDevGame({ roomId }: { roomId: string }) {
   // corpse_colors = ["#6cd10066", "#a7011466", "#1b005266", "#38003866"]
-  let playerId = "3x4";
+  const playerId = "3x4";
   const userSettings: UserSettings = {
     player: "#9fff37",
     corpse: "#33000000",
