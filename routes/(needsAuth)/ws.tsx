@@ -1,13 +1,14 @@
-import OtrioServer from "../server/OtrioServer.tsx";
+import { getCookies } from "$std/http/cookie.ts";
+import OtrioServer from "../../server/OtrioServer.tsx";
+import { getUserByToken } from "../../server/database.tsx";
 
 const clients = new Map<string, WebSocket>();
 const serverGame = new OtrioServer();
 
 export interface WebSockMsg {
-  type: string;
+  type: "player" | "reset" | "end" | "turn" | "set" | "move" | "log";
   data: string;
 }
-
 export function wsSend(target: string, msg: WebSockMsg) {
   if (target === "all") {
     for (const client of clients.values()) {
@@ -18,10 +19,10 @@ export function wsSend(target: string, msg: WebSockMsg) {
   }
 }
 
-function wsHandler(ws: WebSocket, id: string) {
+function wsHandler(ws: WebSocket, id: string, username: string) {
   clients.set(id, ws);
   ws.onopen = (e) => {
-    serverGame.playerJoined(id);
+    serverGame.playerJoined(id, username);
   };
   ws.onmessage = (e) => {
     serverGame.recieve(id, e);
@@ -32,8 +33,10 @@ function wsHandler(ws: WebSocket, id: string) {
   };
 }
 
-export const handler = (req: Request): Response => {
+export const handler = async (req: Request) => {
+  const { authToken } = getCookies(req.headers);
   const { socket, response } = Deno.upgradeWebSocket(req);
-  wsHandler(socket, req.url.split("?", 2)[1]);
+  const username = await getUserByToken(authToken).then((d) => d?.username);
+  wsHandler(socket, req.url.split("?", 2)[1], username ?? "");
   return response;
 };

@@ -14,7 +14,7 @@ export default function Header() {
     <header>
       <nav class="border-gray-200 bg-gray-50 dark:bg-gray-800 dark:border-gray-700">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <a href="/devotrio" class="flex items-center">
+          <a href="/" class="flex items-center">
             <img
               src="https://fresh.deno.dev/logo.svg"
               class="h-8 mr-3 height-full width-full"

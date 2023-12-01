@@ -1,30 +1,30 @@
-import { ChangeCircle } from "../components/CicleSet.tsx";
 import Log from "../components/Logger.tsx";
 import Slot from "../components/Slot.tsx";
-import { WebSockMsg } from "../routes/ws.tsx";
+import { WebSockMsg } from "../routes/(needsAuth)/ws.tsx";
 
 interface UserSettings {
-  player: string; //Players Color
   corpse: string; //Corpse Color
   hover: number; //Selection Opacity
   board: string; //Board Base Color
   secondary: string; //Empty Pieces/Border
 }
 
-class ClientOtrio {
+export default class ClientOtrio {
   #board: Slot[];
   #currPlayer: number;
   #playerID!: string;
   #socket!: WebSocket;
   #playerColors: string[];
-  #defaultColors: {
-    corpse: string;
-    hover: number;
-    board: string;
-    secondary: string;
-  };
-  constructor({ player, ...def }: UserSettings, url: URL) {
-    this.#defaultColors = def;
+  #defaultColors: UserSettings;
+  constructor(url: URL) {
+    // corpse_colors = ["#6cd10066", "#a7011466", "#1b005266", "#38003866"]
+    // player: "#9fff37",
+    this.#defaultColors = {
+      corpse: "#33000000",
+      hover: 0.33,
+      board: "#FED06B",
+      secondary: "#220033",
+    };
     this.#board = Array.from({ length: 27 }, (_, idx) => new Slot(idx));
     this.#currPlayer = 1;
     this.#playerColors = [
@@ -69,6 +69,18 @@ class ClientOtrio {
     console.log(jsonStr);
     const msg = JSON.parse(jsonStr);
     switch (msg.type) {
+      case "player":
+        this.#handlePlayerMsg(msg);
+        break;
+      case "reset":
+        this.#handleResetMsg(msg);
+        break;
+      case "end":
+        this.#handleResetMsg(msg);
+        break;
+      case "turn":
+        this.#handleTurnMsg(msg);
+        break;
       case "set":
         this.#handleSetMsg(msg);
         break;
@@ -81,6 +93,15 @@ class ClientOtrio {
       default:
         break;
     }
+  }
+  #handleTurnMsg(msg: WebSockMsg) {
+    this.#currPlayer = +msg.data;
+  }
+  #handleResetMsg(msg: WebSockMsg) {
+  }
+  #handlePlayerMsg(msg: WebSockMsg) {
+    const num = +msg.data.charAt(0);
+    const name = msg.data.slice(1);
   }
   #handleSetMsg(msg: WebSockMsg) {
     const result = parseInt(msg.data, 16);
@@ -96,36 +117,4 @@ class ClientOtrio {
     this.#handleSetMsg(msg);
     this.#currPlayer++;
   }
-}
-
-export default function OtrioDevGame({ url }: { url: string }) {
-  // corpse_colors = ["#6cd10066", "#a7011466", "#1b005266", "#38003866"]
-  const userSettings: UserSettings = {
-    player: "#9fff37",
-    corpse: "#33000000",
-    hover: 0.33,
-    board: "#FED06B",
-    secondary: "#220033",
-  };
-  const gameInfo = new ClientOtrio(userSettings, new URL(url));
-  const pieces = gameInfo.board.map((v, idx) => {
-    const { x, y, i } = {
-      y: (idx / 3 | 0) / 3 | 0,
-      x: (idx / 3 | 0) % 3,
-      i: idx % 3,
-    };
-    return (
-      <ChangeCircle x={x} y={y} i={i} onChange={gameInfo.onClick} sig={v.sig} />
-    );
-  });
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="min(100vw, 100vh)"
-      height="min(100vw, 100vh)"
-      viewBox="0 0 32 32"
-    >
-      {...pieces}
-    </svg>
-  );
 }

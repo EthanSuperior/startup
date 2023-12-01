@@ -1,13 +1,11 @@
 import { Signal, useSignal } from "@preact/signals";
 
-class Slot {
+export class ServerSlot {
   #state!: number;
-  key!: number;
-  sig: Signal<string>;
+  #key!: number;
 
   constructor(move: number) {
     this.info = move;
-    this.sig = useSignal("#000000");
   }
   get isOccupied() {
     return this.#state != 0;
@@ -29,5 +27,18 @@ class Slot {
   set state(state: number) {
     this.#state = state;
   }
+  get key() {
+    return this.#key;
+  }
+  set key(key: number) {
+    this.#key = key;
+  }
 }
-export default Slot;
+
+export default class Slot extends ServerSlot {
+  sig: Signal<string>;
+  constructor(move: number) {
+    super(move);
+    this.sig = useSignal("#000000");
+  }
+}

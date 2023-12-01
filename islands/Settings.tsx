@@ -1,4 +1,4 @@
-import { OnLoad } from "./Otrio.tsx";
+import { OnLoad } from "./_OtrioOld.tsx";
 
 export default function PlaySettings() {
   return (

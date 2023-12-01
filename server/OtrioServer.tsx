@@ -1,5 +1,5 @@
-import Slot from "../components/Slot.tsx";
-import { WebSockMsg, wsSend } from "../routes/ws.tsx";
+import { ServerSlot } from "../components/Slot.tsx";
+import { WebSockMsg, wsSend } from "../routes/(needsAuth)/ws.tsx";
 
 // 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4; ;7-dead
 // 000 00000->pos
@@ -32,16 +32,17 @@ import { WebSockMsg, wsSend } from "../routes/ws.tsx";
 //   Log("Cats Game " + txt);
 //   // deadMen = [];
 // }
+
 export default class OtrioServer {
-  #players = new Set<string>();
+  #players = new Map<string, string>();
   #currentlyPlaying: string[] = [];
   #currPlayer = 1;
-  #board!: Slot[];
+  #board!: ServerSlot[];
   constructor() {
     this.#newGame();
   }
-  playerJoined(id: string) {
-    this.#players.add(id);
+  playerJoined(id: string, username: string) {
+    this.#players.set(id, username);
   }
   recieve(id: string, e: MessageEvent<string>) {
     const msg: WebSockMsg = JSON.parse(e.data);
@@ -52,8 +53,17 @@ export default class OtrioServer {
     if (this.#currentlyPlaying.find((v) => v == id)) this.#newGame();
   }
   #newGame() {
-    this.#board = Array.from({ length: 27 }, (_, idx) => new Slot(idx));
+    this.#board = Array.from({ length: 27 }, (_, idx) => new ServerSlot(idx));
     this.#currPlayer = 1;
-    throw new Error("Method not implemented.");
+    this.#currentlyPlaying = [];
+    function getRandomItem<T, S>(set: Map<T, S>): T {
+      return Array.from(set.keys())[Math.floor(Math.random() * set.size)];
+    }
+    while (this.#currentlyPlaying.length < 2) {
+      const item = getRandomItem(this.#players);
+      if (!this.#currentlyPlaying.find((v) => v == item)) {
+        this.#currentlyPlaying.push();
+      }
+    }
   }
 }
