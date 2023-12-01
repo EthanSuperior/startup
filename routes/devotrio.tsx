@@ -1,5 +1,6 @@
-import OtrioDevGame from "../islands/OtrioSVG.tsx";
+import OtrioDevGame from "../islands/OtrioClient.tsx";
+import { PageProps } from "$fresh/server.ts";
 
-export default function OtrioDev() {
-  return <OtrioDevGame roomId={"3a562"} />;
+export default function OtrioDev(req:Request) {
+  return <OtrioDevGame roomId={"3a562"} url={req.url}/>;
 }

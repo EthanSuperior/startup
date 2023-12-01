@@ -1,5 +1,5 @@
 import { getCookies } from "$std/http/cookie.ts";
-import { getUserByToken } from "../../database/database.tsx";
+import { getUserByToken } from "../../server/database.tsx";
 import Log from "../../islands/Log.tsx";
 import OtrioGame from "../../islands/Otrio.tsx";
 import PlaySettings from "../../islands/Settings.tsx";

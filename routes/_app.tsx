@@ -2,7 +2,7 @@ import { AppProps } from "$fresh/server.ts";
 import Footer from "../components/Footer.tsx";
 import Header from "../components/Header.tsx";
 
-export default function App({ Component }: AppProps) {
+export default function App({ Component, url }: AppProps) {
   const fontStyles = `
   @import url("https://fonts.googleapis.com/css?family=Open+Sans");
   body {

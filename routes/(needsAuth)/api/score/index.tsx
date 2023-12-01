@@ -3,7 +3,7 @@ import { ScoreboardRow } from "../../../leaderboard.tsx";
 import {
   fetchScores,
   scoreCollection,
-} from "../../../../database/database.tsx";
+} from "../../../../server/database.tsx";
 export const handler: Handlers = {
   async GET() {
     return await fetchScores();

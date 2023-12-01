@@ -14,11 +14,12 @@ import * as $8 from "./routes/leaderboard.tsx";
 import * as $9 from "./routes/rules.tsx";
 import * as $10 from "./routes/user/login.tsx";
 import * as $11 from "./routes/user/logout.tsx";
+import * as $12 from "./routes/ws.tsx";
 import * as $$0 from "./islands/Joke.tsx";
 import * as $$1 from "./islands/Log.tsx";
 import * as $$2 from "./islands/Login.tsx";
 import * as $$3 from "./islands/Otrio.tsx";
-import * as $$4 from "./islands/OtrioSVG.tsx";
+import * as $$4 from "./islands/OtrioClient.tsx";
 import * as $$5 from "./islands/Settings.tsx";
 
 const manifest = {
@@ -35,13 +36,14 @@ const manifest = {
     "./routes/rules.tsx": $9,
     "./routes/user/login.tsx": $10,
     "./routes/user/logout.tsx": $11,
+    "./routes/ws.tsx": $12,
   },
   islands: {
     "./islands/Joke.tsx": $$0,
     "./islands/Log.tsx": $$1,
     "./islands/Login.tsx": $$2,
     "./islands/Otrio.tsx": $$3,
-    "./islands/OtrioSVG.tsx": $$4,
+    "./islands/OtrioClient.tsx": $$4,
     "./islands/Settings.tsx": $$5,
   },
   baseUrl: import.meta.url,

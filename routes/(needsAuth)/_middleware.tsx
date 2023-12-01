@@ -1,6 +1,6 @@
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { getCookies } from "$std/http/cookie.ts";
-import { getUserByToken } from "../../database/database.tsx";
+import { getUserByToken } from "../../server/database.tsx";
 
 export const handler = [
   authenticate,

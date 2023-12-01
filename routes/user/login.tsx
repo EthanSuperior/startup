@@ -6,7 +6,7 @@ import {
   getUser,
   LoginRequest,
   User,
-} from "../../database/database.tsx";
+} from "../../server/database.tsx";
 
 export const handler: Handlers = {
   async POST(req, _ctx) {

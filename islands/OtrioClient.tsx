@@ -139,7 +139,25 @@ function cats_game() {
   Log("Cats Game " + txt);
   // deadMen = [];
 }
-export default function OtrioDevGame({ roomId }: { roomId: string }) {
+export default function OtrioDevGame({ roomId, url}: { roomId: string, url:string|URL }) {
+  useEffect(() => {
+    url = new URL(url);
+    const socket = new WebSocket(`${(url.protocol.endsWith('s'))?'wss':'ws'}://${url.hostname}:${url.port}/ws`);
+    // const socket = new WebSocket("ws://localhost:4000/ws");
+    // const listener = (e: MessageEvent) => {
+    //   const msg: ChannelMessage = JSON.parse(e.data);
+    //   dispatch(msg);
+    // };
+    const handleMessage = (event: MessageEvent) => {
+      console.log(event);
+    };
+
+    socket.addEventListener("message", handleMessage);
+    return () => {
+      socket.removeEventListener("message", handleMessage);
+      socket.close();
+    };
+  }, []);
   // corpse_colors = ["#6cd10066", "#a7011466", "#1b005266", "#38003866"]
   const playerId = "3x4";
   const userSettings: UserSettings = {
