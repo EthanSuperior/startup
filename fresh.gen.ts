@@ -14,11 +14,15 @@ import * as $leaderboard from "./routes/leaderboard.tsx";
 import * as $rules from "./routes/rules.tsx";
 import * as $user_login from "./routes/user/login.tsx";
 import * as $user_logout from "./routes/user/logout.tsx";
+import * as $CicleSet from "./islands/CicleSet.tsx";
+import * as $Counter from "./islands/Counter.tsx";
 import * as $Joke from "./islands/Joke.tsx";
 import * as $Log from "./islands/Log.tsx";
+import * as $Logger from "./islands/Logger.tsx";
 import * as $Login from "./islands/Login.tsx";
 import * as $Otrio from "./islands/Otrio.tsx";
 import * as $Settings from "./islands/Settings.tsx";
+import * as $Slot from "./islands/Slot.tsx";
 import * as $_OtrioOld from "./islands/_OtrioOld.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -38,11 +42,15 @@ const manifest = {
     "./routes/user/logout.tsx": $user_logout,
   },
   islands: {
+    "./islands/CicleSet.tsx": $CicleSet,
+    "./islands/Counter.tsx": $Counter,
     "./islands/Joke.tsx": $Joke,
     "./islands/Log.tsx": $Log,
+    "./islands/Logger.tsx": $Logger,
     "./islands/Login.tsx": $Login,
     "./islands/Otrio.tsx": $Otrio,
     "./islands/Settings.tsx": $Settings,
+    "./islands/Slot.tsx": $Slot,
     "./islands/_OtrioOld.tsx": $_OtrioOld,
   },
   baseUrl: import.meta.url,

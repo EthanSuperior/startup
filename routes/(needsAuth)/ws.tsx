@@ -5,8 +5,9 @@ import { getUserByToken } from "../../server/database.tsx";
 const clients = new Map<string, WebSocket>();
 const serverGame = new OtrioServer();
 
+type MsgType = "end" | "log" | "move" | "player" | "reset" | "set" | "turn";
 export interface WebSockMsg {
-  type: "player" | "reset" | "end" | "turn" | "set" | "move" | "log";
+  type: MsgType | "leave" | "join";
   data: string;
 }
 export function wsSend(target: string, msg: WebSockMsg) {
@@ -21,15 +22,15 @@ export function wsSend(target: string, msg: WebSockMsg) {
 
 function wsHandler(ws: WebSocket, id: string, username: string) {
   clients.set(id, ws);
-  ws.onopen = (e) => {
-    serverGame.playerJoined(id, username);
-  };
+  const msg: WebSockMsg = { type: "join", data: username };
+  serverGame.recieve(id, { data: JSON.stringify(msg) });
   ws.onmessage = (e) => {
     serverGame.recieve(id, e);
   };
   ws.onclose = (e) => {
     clients.delete(id);
-    serverGame.playerLeft(id);
+    const msg: WebSockMsg = { type: "leave", data: username };
+    serverGame.recieve(id, { data: JSON.stringify(msg) });
   };
 }
 

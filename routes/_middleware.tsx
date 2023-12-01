@@ -1,6 +1,6 @@
 // routes/_middleware.ts
 
-import { MiddlewareHandlerContext } from "$fresh/server.ts";
+import { FreshContext } from "$fresh/server.ts";
 
 export const handler = [
   logging,
@@ -8,7 +8,7 @@ export const handler = [
 
 async function logging(
   req: Request,
-  ctx: MiddlewareHandlerContext,
+  ctx: FreshContext,
 ): Promise<Response> {
   const res = await ctx.next();
   if (!req.url.includes("_frsh")) {

@@ -1,4 +1,4 @@
-import { ServerSlot } from "../components/Slot.tsx";
+import { ServerSlot } from "../islands/Slot.tsx";
 import { WebSockMsg, wsSend } from "../routes/(needsAuth)/ws.tsx";
 
 // 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4; ;7-dead
@@ -41,16 +41,45 @@ export default class OtrioServer {
   constructor() {
     this.#newGame();
   }
-  playerJoined(id: string, username: string) {
-    this.#players.set(id, username);
+  #handleEndMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
   }
-  recieve(id: string, e: MessageEvent<string>) {
-    const msg: WebSockMsg = JSON.parse(e.data);
+  #handleJoinMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  #handleLogMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  #handleLeaveMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  #handleMoveMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  #handlePlayerMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  #handleResetMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  #handleSetMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  #handleTurnMsg(msg: WebSockMsg): void {
+    throw new Error("Method not implemented.");
+  }
+  recieve(id: string, { data }: MessageEvent<string> | { data: string }) {
+    const msg: WebSockMsg = JSON.parse(data);
+    if (msg.type == "join") {
+      const notStarted = this.#currentlyPlaying.length < 2;
+      this.#players.set(id, msg.data);
+      if (notStarted) this.#newGame();
+    } else if (msg.type == "leave") {
+      this.#players.delete(id);
+      if (this.#currentlyPlaying.find((v) => v == id)) this.#newGame();
+    }
+    console.log(msg.type);
     wsSend("all", msg);
-  }
-  playerLeft(id: string) {
-    this.#players.delete(id);
-    if (this.#currentlyPlaying.find((v) => v == id)) this.#newGame();
   }
   #newGame() {
     this.#board = Array.from({ length: 27 }, (_, idx) => new ServerSlot(idx));
@@ -59,11 +88,15 @@ export default class OtrioServer {
     function getRandomItem<T, S>(set: Map<T, S>): T {
       return Array.from(set.keys())[Math.floor(Math.random() * set.size)];
     }
+    console.log(this.#players.size);
+    if (this.#players.size < 2) return;
+    this.#currentlyPlaying = [];
     while (this.#currentlyPlaying.length < 2) {
       const item = getRandomItem(this.#players);
       if (!this.#currentlyPlaying.find((v) => v == item)) {
         this.#currentlyPlaying.push();
       }
     }
+    console.log("game started....");
   }
 }
