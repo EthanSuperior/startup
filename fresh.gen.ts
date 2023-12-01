@@ -2,51 +2,50 @@
 // This file SHOULD be checked into source version control.
 // This file is automatically updated during development when running `dev.ts`.
 
-import * as $0 from "./routes/(needsAuth)/_middleware.tsx";
-import * as $1 from "./routes/(needsAuth)/api/score/index.tsx";
-import * as $2 from "./routes/(needsAuth)/play.tsx";
-import * as $3 from "./routes/(needsAuth)/ws.tsx";
-import * as $4 from "./routes/_404.tsx";
-import * as $5 from "./routes/_app.tsx";
-import * as $6 from "./routes/_middleware.tsx";
-import * as $7 from "./routes/devotrio.tsx";
-import * as $8 from "./routes/index.tsx";
-import * as $9 from "./routes/leaderboard.tsx";
-import * as $10 from "./routes/rules.tsx";
-import * as $11 from "./routes/user/login.tsx";
-import * as $12 from "./routes/user/logout.tsx";
-import * as $$0 from "./islands/Joke.tsx";
-import * as $$1 from "./islands/Log.tsx";
-import * as $$2 from "./islands/Login.tsx";
-import * as $$3 from "./islands/Otrio.tsx";
-import * as $$4 from "./islands/Settings.tsx";
-import * as $$5 from "./islands/_OtrioOld.tsx";
+import * as $_needsAuth_middleware from "./routes/(needsAuth)/_middleware.tsx";
+import * as $_needsAuth_api_score_index from "./routes/(needsAuth)/api/score/index.tsx";
+import * as $_needsAuth_play from "./routes/(needsAuth)/play.tsx";
+import * as $_needsAuth_ws from "./routes/(needsAuth)/ws.tsx";
+import * as $_404 from "./routes/_404.tsx";
+import * as $_app from "./routes/_app.tsx";
+import * as $_middleware from "./routes/_middleware.tsx";
+import * as $index from "./routes/index.tsx";
+import * as $leaderboard from "./routes/leaderboard.tsx";
+import * as $rules from "./routes/rules.tsx";
+import * as $user_login from "./routes/user/login.tsx";
+import * as $user_logout from "./routes/user/logout.tsx";
+import * as $Joke from "./islands/Joke.tsx";
+import * as $Log from "./islands/Log.tsx";
+import * as $Login from "./islands/Login.tsx";
+import * as $Otrio from "./islands/Otrio.tsx";
+import * as $Settings from "./islands/Settings.tsx";
+import * as $_OtrioOld from "./islands/_OtrioOld.tsx";
+import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {
-    "./routes/(needsAuth)/_middleware.tsx": $0,
-    "./routes/(needsAuth)/api/score/index.tsx": $1,
-    "./routes/(needsAuth)/play.tsx": $2,
-    "./routes/(needsAuth)/ws.tsx": $3,
-    "./routes/_404.tsx": $4,
-    "./routes/_app.tsx": $5,
-    "./routes/_middleware.tsx": $6,
-    "./routes/devotrio.tsx": $7,
-    "./routes/index.tsx": $8,
-    "./routes/leaderboard.tsx": $9,
-    "./routes/rules.tsx": $10,
-    "./routes/user/login.tsx": $11,
-    "./routes/user/logout.tsx": $12,
+    "./routes/(needsAuth)/_middleware.tsx": $_needsAuth_middleware,
+    "./routes/(needsAuth)/api/score/index.tsx": $_needsAuth_api_score_index,
+    "./routes/(needsAuth)/play.tsx": $_needsAuth_play,
+    "./routes/(needsAuth)/ws.tsx": $_needsAuth_ws,
+    "./routes/_404.tsx": $_404,
+    "./routes/_app.tsx": $_app,
+    "./routes/_middleware.tsx": $_middleware,
+    "./routes/index.tsx": $index,
+    "./routes/leaderboard.tsx": $leaderboard,
+    "./routes/rules.tsx": $rules,
+    "./routes/user/login.tsx": $user_login,
+    "./routes/user/logout.tsx": $user_logout,
   },
   islands: {
-    "./islands/Joke.tsx": $$0,
-    "./islands/Log.tsx": $$1,
-    "./islands/Login.tsx": $$2,
-    "./islands/Otrio.tsx": $$3,
-    "./islands/Settings.tsx": $$4,
-    "./islands/_OtrioOld.tsx": $$5,
+    "./islands/Joke.tsx": $Joke,
+    "./islands/Log.tsx": $Log,
+    "./islands/Login.tsx": $Login,
+    "./islands/Otrio.tsx": $Otrio,
+    "./islands/Settings.tsx": $Settings,
+    "./islands/_OtrioOld.tsx": $_OtrioOld,
   },
   baseUrl: import.meta.url,
-};
+} satisfies Manifest;
 
 export default manifest;
