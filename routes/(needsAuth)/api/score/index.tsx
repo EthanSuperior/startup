@@ -1,9 +1,6 @@
 import { Handlers } from "$fresh/server.ts";
 import { ScoreboardRow } from "../../../leaderboard.tsx";
-import {
-  fetchScores,
-  scoreCollection,
-} from "../../../../server/database.tsx";
+import { fetchScores, scoreCollection } from "../../../../server/database.tsx";
 export const handler: Handlers = {
   async GET() {
     return await fetchScores();

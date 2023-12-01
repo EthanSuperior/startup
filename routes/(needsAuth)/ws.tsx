@@ -36,7 +36,7 @@ function wsHandler(ws: WebSocket, id: string, username: string) {
 export const handler = async (req: Request) => {
   const { authToken } = getCookies(req.headers);
   const { socket, response } = Deno.upgradeWebSocket(req);
-  const username = await getUserByToken(authToken).then((d) => d?.username);
+  const username = (await getUserByToken(authToken)).username;
   wsHandler(socket, req.url.split("?", 2)[1], username ?? "");
   return response;
 };

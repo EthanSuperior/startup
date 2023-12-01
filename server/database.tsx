@@ -24,7 +24,9 @@ export function getUser(info: LoginRequest) {
 }
 
 export function getUserByToken(token: string) {
-  return userCollection.findOne({ token: token });
+  return userCollection.findOne({ token: token }).then((doc) => {
+    return ((doc as unknown) as User);
+  });
 }
 
 export interface LoginRequest {

@@ -4,9 +4,7 @@ import Log from "../../islands/Log.tsx";
 import OtrioGame from "../../islands/Otrio.tsx";
 export default async function PlayOtrio(req: Request) {
   const { authToken } = getCookies(req.headers);
-  const { username } = (await getUserByToken(authToken)) as unknown as {
-    username: string;
-  };
+  const { username } = await getUserByToken(authToken);
   //container padding: 0px 15px 0px 15px
   return (
     <>
