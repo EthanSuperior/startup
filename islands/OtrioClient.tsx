@@ -1,13 +1,6 @@
-import { useEffect } from "preact/hooks";
-import { ChangeCircle, CircleColor } from "../components/CicleSet.tsx";
-import { Signal, useSignal } from "@preact/signals";
-// 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4 7-dead
-// 000 00000->pos
-// move&(7 << 5)->states dead = 224
-// move&~(7 << 5)->place
-// opacity->float
-// Pieces => Uint8Array
-// LVL Data 0000 0000
+import { ChangeCircle } from "../components/CicleSet.tsx";
+import Slot from "../components/Slot.tsx";
+import { WebSockMsg } from "../routes/ws.tsx";
 
 interface UserSettings {
   player: string; //Players Color
@@ -17,40 +10,11 @@ interface UserSettings {
   secondary: string; //Empty Pieces/Border
 }
 
-class Slot {
-  #state!: number;
-  key!: number;
-  sig: Signal<string>;
-
-  constructor(move: number) {
-    this.info = move;
-    this.sig = useSignal("#000000");
-  }
-  get isOccupied() {
-    return this.#state != 0;
-  }
-  get playerID() {
-    if (this.#state == 0 || this.#state == 7) return 0;
-    else return this.#state;
-  }
-  set info(move: number) {
-    this.key = move & 31;
-    this.#state = (move & 224) >> 5;
-  }
-  get info() {
-    return this.#state << 5 | this.key;
-  }
-  get state() {
-    return this.#state;
-  }
-  set state(state: number) {
-    this.#state = state;
-  }
-}
 class ClientOtrio {
   board: Slot[];
   currPlayer: number;
-  #playerID: string;
+  #playerID!: string;
+  #socket!: WebSocket;
   playerColors: string[];
   defaultColors: {
     corpse: string;
@@ -58,11 +22,10 @@ class ClientOtrio {
     board: string;
     secondary: string;
   };
-  constructor({ player, ...def }: UserSettings, playerId: string) {
+  constructor({ player, ...def }: UserSettings, url: URL) {
     this.defaultColors = def;
     this.board = Array.from({ length: 27 }, (_, idx) => new Slot(idx));
     this.currPlayer = 1;
-    this.#playerID = playerId;
     this.playerColors = [
       "#000000",
       "#9fff37",
@@ -70,17 +33,30 @@ class ClientOtrio {
       "#3d03b5",
       "#9f009f",
     ];
+    this.#initialize(url);
   }
-  receive(move: string) {
-    const result = parseInt(move, 16);
+  #initialize(url: URL) {
+    this.#playerID = crypto.randomUUID();
+    const wsProtocol = (url.protocol.endsWith("s")) ? "wss" : "ws";
+    const sockURL = `${wsProtocol}://${url.hostname}:${url.port}/ws`;
+    this.#socket = new WebSocket(`${sockURL}?${this.#playerID}`);
+    this.#socket.addEventListener("message", this.#receive.bind(this));
+  }
+  clean_up() {
+    this.#socket.removeEventListener("message", this.#receive.bind(this));
+    this.#socket.close();
+  }
+  #receive({ data: jsonStr }: MessageEvent<string>) {
+    console.log(jsonStr);
+    const { type, data } = JSON.parse(jsonStr);
+    console.log(type, data);
+    const result = parseInt(data, 16);
     const idx = result & 31;
     this.board[idx].info = result;
-    this.board[idx].sig.value = this.getColor();
+    this.board[idx].sig.value = this.#getColor();
   }
-  send(move: number) {
-    console.log(move.toString(16));
-  }
-  getColor(): string {
+  #handleMoveMsg(msg: WebSockMsg) {}
+  #getColor(): string {
     return this.playerColors[this.currPlayer];
   }
   get onClick() {
@@ -88,8 +64,12 @@ class ClientOtrio {
       if (this.board[i].isOccupied) return;
       this.currPlayer = (this.currPlayer === 1) ? 2 : 1;
       this.board[i].state = this.currPlayer;
-      svg.style.stroke = this.getColor();
-      this.send((this.currPlayer << 5) | i);
+      svg.style.stroke = this.#getColor();
+      const msg: WebSockMsg = {
+        type: "move",
+        data: ((this.currPlayer << 5) | i).toString(16),
+      };
+      this.#socket.send(JSON.stringify(msg));
     }
     const colorFunc = click.bind(this);
     return function (this: SVGCircleElement, key: number) {
@@ -97,69 +77,9 @@ class ClientOtrio {
     };
   }
 }
-function Initilize() {}
 
-const user = "";
-const userId = 0;
-export function OnLoad() {
-  Log("", "move");
-  Log(`${user} started a game with themselves.......`);
-}
-let logger;
-
-function Log(msg: string, _tag: string | null = null) {
-  if (typeof document === "undefined") return;
-  logger ??= document.getElementById("log_msg");
-  if (!logger) return;
-  if (msg == "") return;
-  const msgbox = document.createElement("li");
-  msgbox.textContent = msg;
-  logger.appendChild(msgbox);
-}
-function win_game() {
-  const txt = "Player 1 Wins!!";
-  Log("Congrats!!! " + txt);
-  const url = new URL(self.location.href);
-  url.pathname = "/api/score";
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ "name": user, "wins": 1, "games": 1 }), // Convert the data object to a JSON string
-  }).then((r) => Log);
-}
-function cats_game() {
-  const url = new URL(self.location.href);
-  url.pathname = "/api/score";
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ "name": user, "games": 1 }), // Convert the data object to a JSON string
-  }).then((r) => Log);
-  const txt = "Nobody wins...";
-  Log("Cats Game " + txt);
-  // deadMen = [];
-}
-export default function OtrioDevGame({ roomId, url}: { roomId: string, url:string|URL }) {
-  useEffect(() => {
-    url = new URL(url);
-    const socket = new WebSocket(`${(url.protocol.endsWith('s'))?'wss':'ws'}://${url.hostname}:${url.port}/ws`);
-    // const socket = new WebSocket("ws://localhost:4000/ws");
-    // const listener = (e: MessageEvent) => {
-    //   const msg: ChannelMessage = JSON.parse(e.data);
-    //   dispatch(msg);
-    // };
-    const handleMessage = (event: MessageEvent) => {
-      console.log(event);
-    };
-
-    socket.addEventListener("message", handleMessage);
-    return () => {
-      socket.removeEventListener("message", handleMessage);
-      socket.close();
-    };
-  }, []);
+export default function OtrioDevGame({ url }: { url: string }) {
   // corpse_colors = ["#6cd10066", "#a7011466", "#1b005266", "#38003866"]
-  const playerId = "3x4";
   const userSettings: UserSettings = {
     player: "#9fff37",
     corpse: "#33000000",
@@ -167,11 +87,7 @@ export default function OtrioDevGame({ roomId, url}: { roomId: string, url:strin
     board: "#FED06B",
     secondary: "#220033",
   };
-  const gameInfo: ClientOtrio = new ClientOtrio(userSettings, playerId);
-  const defaultColor: CircleColor = {
-    stroke: gameInfo.defaultColors.secondary,
-    opacity: 0x44,
-  };
+  const gameInfo = new ClientOtrio(userSettings, new URL(url));
   const pieces = gameInfo.board.map((v, idx) => {
     const { x, y, i } = {
       y: (idx / 3 | 0) / 3 | 0,
@@ -181,11 +97,6 @@ export default function OtrioDevGame({ roomId, url}: { roomId: string, url:strin
     return (
       <ChangeCircle x={x} y={y} i={i} onChange={gameInfo.onClick} sig={v.sig} />
     );
-  });
-  useEffect(() => {
-    Initilize();
-    OnLoad();
-    setTimeout(() => gameInfo.receive("4D"), 2500);
   });
   return (
     <svg
