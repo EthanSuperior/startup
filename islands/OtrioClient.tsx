@@ -1,4 +1,5 @@
 import { ChangeCircle } from "../components/CicleSet.tsx";
+import Log from "../components/Logger.tsx";
 import Slot from "../components/Slot.tsx";
 import { WebSockMsg } from "../routes/ws.tsx";
 
@@ -11,22 +12,22 @@ interface UserSettings {
 }
 
 class ClientOtrio {
-  board: Slot[];
-  currPlayer: number;
+  #board: Slot[];
+  #currPlayer: number;
   #playerID!: string;
   #socket!: WebSocket;
-  playerColors: string[];
-  defaultColors: {
+  #playerColors: string[];
+  #defaultColors: {
     corpse: string;
     hover: number;
     board: string;
     secondary: string;
   };
   constructor({ player, ...def }: UserSettings, url: URL) {
-    this.defaultColors = def;
-    this.board = Array.from({ length: 27 }, (_, idx) => new Slot(idx));
-    this.currPlayer = 1;
-    this.playerColors = [
+    this.#defaultColors = def;
+    this.#board = Array.from({ length: 27 }, (_, idx) => new Slot(idx));
+    this.#currPlayer = 1;
+    this.#playerColors = [
       "#000000",
       "#9fff37",
       "#fe122e",
@@ -42,32 +43,13 @@ class ClientOtrio {
     this.#socket = new WebSocket(`${sockURL}?${this.#playerID}`);
     this.#socket.addEventListener("message", this.#receive.bind(this));
   }
-  clean_up() {
-    this.#socket.removeEventListener("message", this.#receive.bind(this));
-    this.#socket.close();
-  }
-  #receive({ data: jsonStr }: MessageEvent<string>) {
-    console.log(jsonStr);
-    const { type, data } = JSON.parse(jsonStr);
-    console.log(type, data);
-    const result = parseInt(data, 16);
-    const idx = result & 31;
-    this.board[idx].info = result;
-    this.board[idx].sig.value = this.#getColor();
-  }
-  #handleMoveMsg(msg: WebSockMsg) {}
-  #getColor(): string {
-    return this.playerColors[this.currPlayer];
-  }
   get onClick() {
     function click(this: ClientOtrio, svg: SVGCircleElement, i: number) {
       if (this.board[i].isOccupied) return;
-      this.currPlayer = (this.currPlayer === 1) ? 2 : 1;
-      this.board[i].state = this.currPlayer;
-      svg.style.stroke = this.#getColor();
+      svg.style.stroke = this.#playerColors[this.#currPlayer];
       const msg: WebSockMsg = {
         type: "move",
-        data: ((this.currPlayer << 5) | i).toString(16),
+        data: ((this.#currPlayer << 5) | i).toString(16),
       };
       this.#socket.send(JSON.stringify(msg));
     }
@@ -75,6 +57,44 @@ class ClientOtrio {
     return function (this: SVGCircleElement, key: number) {
       return colorFunc(this, key);
     };
+  }
+  get board() {
+    return this.#board;
+  }
+  clean_up() {
+    this.#socket.removeEventListener("message", this.#receive.bind(this));
+    this.#socket.close();
+  }
+  #receive({ data: jsonStr }: MessageEvent<string>) {
+    console.log(jsonStr);
+    const msg = JSON.parse(jsonStr);
+    switch (msg.type) {
+      case "set":
+        this.#handleSetMsg(msg);
+        break;
+      case "move":
+        this.#handleMoveMsg(msg);
+        break;
+      case "log":
+        Log(msg);
+        break;
+      default:
+        break;
+    }
+  }
+  #handleSetMsg(msg: WebSockMsg) {
+    const result = parseInt(msg.data, 16);
+    const idx = result & 31;
+    const state = (result & 224) >> 5;
+    this.#currPlayer = state;
+    this.board[idx].info = result;
+    this.board[idx].sig.value = (state != 7)
+      ? this.#playerColors[state]
+      : this.#defaultColors.corpse;
+  }
+  #handleMoveMsg(msg: WebSockMsg) {
+    this.#handleSetMsg(msg);
+    this.#currPlayer++;
   }
 }
 
