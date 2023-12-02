@@ -272,7 +272,6 @@ class ClientOtrio {
     };
   }
   clean_up() {
-    this.#socket.removeEventListener("message", this.#receive.bind(this));
     this.#socket.close();
   }
 }

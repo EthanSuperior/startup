@@ -113,6 +113,7 @@ export default class OtrioServer {
   }
   #handleLeaveMsg(id: string, msg: WebSockMsg): void {
     this.#players.delete(id);
+    console.log(this.#currentlyPlaying.length, " w ", this.#players.size);
     const idx_in_plys = this.#currentlyPlaying.find((v) => v.sock_id == id);
     if (idx_in_plys !== undefined) {
       wsSend("all", { type: "leave", data: `${idx_in_plys.place}` });

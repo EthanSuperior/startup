@@ -31,16 +31,22 @@ export function wsSend(target: string, msg: WebSockMsg) {
 function wsHandler(ws: WebSocket, id: string, username: string) {
   clients.set(id, ws);
   const msg: WebSockMsg = { type: "join", data: username };
-  let inactive: number | undefined;
-  const timer = setInterval(() => {
-    ws.send(JSON.stringify({ type: "ping", data: "" }));
-    clearTimeout(inactive);
-    inactive = setTimeout(() => ws.close(), 8000);
-  }, 3000);
+  let living = true;
+  function ping() {
+    if (!living) {
+      console.log("Killing ", id);
+      ws.close();
+    } else {
+      console.log("pinging ", id);
+      ws.send(JSON.stringify({ type: "ping", data: "" }));
+      living = false;
+    }
+  }
+  const timer = setInterval(ping, 5000);
   serverGame.recieve(id, msg);
   ws.onmessage = (e) => {
     const msg = JSON.parse(e.data);
-    if (msg.type == "pong") clearTimeout(inactive);
+    if (msg.type == "pong") living = true;
     else serverGame.recieve(id, msg);
   };
   ws.onclose = (_e) => {
@@ -48,7 +54,6 @@ function wsHandler(ws: WebSocket, id: string, username: string) {
     const msg: WebSockMsg = { type: "leave", data: username };
     serverGame.recieve(id, msg);
     clearInterval(timer);
-    clearTimeout(inactive);
   };
 }
 
