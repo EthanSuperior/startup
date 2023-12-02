@@ -37,7 +37,6 @@ function wsHandler(ws: WebSocket, id: string, username: string) {
       console.log("Killing ", id);
       ws.close();
     } else {
-      console.log("pinging ", id);
       ws.send(JSON.stringify({ type: "ping", data: "" }));
       living = false;
     }

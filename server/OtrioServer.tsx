@@ -3,35 +3,6 @@ import { PlayerData, WebSockMsg, wsSend } from "../routes/(needsAuth)/ws.tsx";
 
 // 0 -> copse? 0->occupied 00->player#  -> 000[8]  0-None, 1-pl1, 2-pl2, pl3, pl4; ;7-dead
 // 000 00000->pos
-// move&(7 << 5)->states dead = 224
-// move&~(7 << 5)->place
-// opacity->float
-// Pieces => Uint8Array
-// LVL Data 0000 0000
-
-// function win_game() {
-//   const txt = "Player 1 Wins!!";
-//   Log("Congrats!!! " + txt);
-//   const url = new URL(self.location.href);
-//   url.pathname = "/api/score";
-//   fetch(url, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ "name": user, "wins": 1, "games": 1 }), // Convert the data object to a JSON string
-//   }).then((r) => Log);
-// }
-// function cats_game() {
-//   const url = new URL(self.location.href);
-//   url.pathname = "/api/score";
-//   fetch(url, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({ "name": user, "games": 1 }), // Convert the data object to a JSON string
-//   }).then((r) => Log);
-//   const txt = "Nobody wins...";
-//   Log("Cats Game " + txt);
-//   // deadMen = [];
-// }
 
 export default class OtrioServer {
   #players = new Map<string, string>();
@@ -99,7 +70,6 @@ export default class OtrioServer {
   #handleJoinMsg(id: string, msg: WebSockMsg): void {
     const notStarted = this.#currentlyPlaying.length < 2;
     this.#players.set(id, msg.data);
-    console.log(this.#currentlyPlaying.length, " w ", this.#players.size);
     if (notStarted) this.#newGame();
     for (const slot of this.#board) {
       if (slot.state !== 0) {
@@ -113,7 +83,6 @@ export default class OtrioServer {
   }
   #handleLeaveMsg(id: string, msg: WebSockMsg): void {
     this.#players.delete(id);
-    console.log(this.#currentlyPlaying.length, " w ", this.#players.size);
     const idx_in_plys = this.#currentlyPlaying.find((v) => v.sock_id == id);
     if (idx_in_plys !== undefined) {
       wsSend("all", { type: "leave", data: `${idx_in_plys.place}` });

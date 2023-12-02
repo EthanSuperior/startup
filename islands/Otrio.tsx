@@ -34,6 +34,8 @@ class ClientOtrio {
   #yourTurnNum = 0;
   #playerID!: string;
   #socket!: WebSocket;
+  #playNames1 = useSignal("");
+  #playNames2 = useSignal("");
   #playerColors = [
     "#B58B59",
     "#9fff37",
@@ -103,7 +105,8 @@ class ClientOtrio {
     }
   }
   #handleEndMsg(msg: WebSockMsg): void {
-    console.log(msg.data);
+    this.#playNames1.value = "";
+    this.#playNames2.value = "";
     if (this.#yourTurnNum != 0) {
       const url = new URL(self.location.href);
       url.pathname = "/api/score";
@@ -147,6 +150,8 @@ class ClientOtrio {
   #handlePlayerMsg(msg: WebSockMsg): void {
     const playerData: PlayerData = JSON.parse(msg.data);
     this.#players[playerData.place] = playerData;
+    if (playerData.place == 1) this.#playNames1.value = playerData.username;
+    if (playerData.place == 2) this.#playNames2.value = playerData.username;
   }
   #handleResetMsg(msg: WebSockMsg): void {
     this.#board.forEach((s) => {
@@ -247,6 +252,21 @@ class ClientOtrio {
         </rect>
         {...playerCircles}
         {...pieces}
+        <text
+          x="2.4"
+          y="1.8"
+          dx={2}
+          font-size=".07em"
+        >
+          {this.#playNames1}
+        </text>
+        <text
+          x="15"
+          y="44.8"
+          font-size=".07rem"
+        >
+          {this.#playNames2}
+        </text>
       </svg>
     );
   }

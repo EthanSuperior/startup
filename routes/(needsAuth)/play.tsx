@@ -12,7 +12,6 @@ export default async function PlayOtrio(req: Request) {
         <div class="grid grid-cols-8 gap-4">
           <div class="col-span-6">
             <div class="players text-center">
-              <span class="user-name">{username}</span>
               <OtrioGame url={req.url} {...{ "username": username }} />
             </div>
           </div>
