@@ -66,6 +66,9 @@ class ClientOtrio {
   #receive({ data: jsonStr }: MessageEvent<string>) {
     const msg = JSON.parse(jsonStr);
     switch (msg.type) {
+      case "ping":
+        this.#socket.send(JSON.stringify({ type: "pong", data: "" }));
+        break;
       case "player":
         this.#handlePlayerMsg(msg);
         break;

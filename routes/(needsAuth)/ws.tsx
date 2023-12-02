@@ -5,7 +5,7 @@ import { getUserByToken } from "../../server/database.tsx";
 const clients = new Map<string, WebSocket>();
 const serverGame = new OtrioServer();
 
-type _GameMsg = "end" | "move" | "reset" | "set" | "turn";
+type _GameMsg = "end" | "move" | "reset" | "set" | "turn" | "ping" | "pong";
 type _ServerMsg = "join" | "leave" | "log" | "player" | "update";
 type MsgType = _GameMsg | _ServerMsg;
 export interface WebSockMsg {
@@ -31,14 +31,24 @@ export function wsSend(target: string, msg: WebSockMsg) {
 function wsHandler(ws: WebSocket, id: string, username: string) {
   clients.set(id, ws);
   const msg: WebSockMsg = { type: "join", data: username };
+  let inactive: number | undefined;
+  const timer = setInterval(() => {
+    ws.send(JSON.stringify({ type: "ping", data: "" }));
+    clearTimeout(inactive);
+    inactive = setTimeout(() => ws.close(), 8000);
+  }, 3000);
   serverGame.recieve(id, msg);
   ws.onmessage = (e) => {
-    serverGame.recieve(id, JSON.parse(e.data));
+    const msg = JSON.parse(e.data);
+    if (msg.type == "pong") clearTimeout(inactive);
+    else serverGame.recieve(id, msg);
   };
   ws.onclose = (_e) => {
     clients.delete(id);
     const msg: WebSockMsg = { type: "leave", data: username };
     serverGame.recieve(id, msg);
+    clearInterval(timer);
+    clearTimeout(inactive);
   };
 }
 
