@@ -6,7 +6,7 @@ import { Signal, useSignal } from "@preact/signals";
 
 let logger: HTMLElement | null;
 // deno-lint-ignore no-explicit-any
-function Log(msg: any | string, _tag: string | null=null){
+function Log(msg: any | string, _tag: string | null = null) {
   if (!IS_BROWSER) return;
   if (typeof document === "undefined") return;
   logger = document.querySelector("#log_msg");
@@ -17,8 +17,7 @@ function Log(msg: any | string, _tag: string | null=null){
   const msgbox = document.createElement("li");
   msgbox.textContent = msg;
   logger.appendChild(msgbox);
-};
-
+}
 
 interface UserSettings {
   corpse: string; //Corpse Color
@@ -56,9 +55,12 @@ class ClientOtrio {
   }
   #initialize(url: URL) {
     this.#playerID = crypto.randomUUID();
-    const wsProtocol = (url.protocol.endsWith("s")) ? "wss" : "ws";
+    const wsProtocol = url.protocol === "http:" ? "ws" : "wss";
     const sockURL = `${wsProtocol}://${url.hostname}:${url.port}/ws`;
     this.#socket = new WebSocket(`${sockURL}?${this.#playerID}`);
+    this.#socket.addEventListener("open", () => {
+      this.#socket.send(JSON.stringify({ type: "update", data: "" }));
+    });
     this.#socket.addEventListener("message", this.#receive.bind(this));
   }
   #receive({ data: jsonStr }: MessageEvent<string>) {
@@ -99,10 +101,31 @@ class ClientOtrio {
   }
   #handleEndMsg(msg: WebSockMsg): void {
     console.log(msg.data);
+    if (this.#yourTurnNum != 0) {
+      const url = new URL(self.location.href);
+      url.pathname = "/api/score";
+      const username = this.#players[this.#yourTurnNum].username;
+      const victor = msg.data === `${username} Won!`;
+
+      fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          "name": username,
+          "games": 1,
+          ...((msg.data !== "Cats Game")
+            ? {
+              "wins": +victor,
+              "losses": +!victor,
+            }
+            : {}),
+        }), // Convert the data object to a JSON string
+      });
+    }
     this.#handleResetMsg(msg);
   }
   #handleJoinMsg(msg: WebSockMsg): void {
-    this.#yourTurnNum = +msg.data
+    this.#yourTurnNum = +msg.data;
   }
   #handleLogMsg(msg: WebSockMsg): void {
     Log(msg);
@@ -114,12 +137,12 @@ class ClientOtrio {
     this.#handleSetMsg(msg);
     const idx = (parseInt(msg.data, 16) & 31) % 3;
     const plyrData = this.#players[this.#currPlayer];
-    const piece_cnt = (plyrData.pieces_left >> (3*idx)) & 7;
-    plyrData.pieces_left &= ~(7<<(3*idx)) | ((piece_cnt >> 1) << (3*idx));
+    const piece_cnt = (plyrData.pieces_left >> (3 * idx)) & 7;
+    plyrData.pieces_left &= ~(7 << (3 * idx)) | ((piece_cnt >> 1) << (3 * idx));
     this.#markOff(this.#currPlayer++, idx, piece_cnt);
   }
   #handlePlayerMsg(msg: WebSockMsg): void {
-    const playerData:PlayerData = JSON.parse(msg.data);
+    const playerData: PlayerData = JSON.parse(msg.data);
     this.#players[playerData.place] = playerData;
   }
   #handleResetMsg(msg: WebSockMsg): void {
@@ -127,7 +150,9 @@ class ClientOtrio {
       s.state = 0;
       s.sig.value = this.#playerColors[0];
     });
-    this.#playerPieces.forEach((arr,i)=>arr.forEach(v=>v.value = this.#playerColors[i+1]));
+    this.#playerPieces.forEach((arr, i) =>
+      arr.forEach((v) => v.value = this.#playerColors[i + 1])
+    );
     this.#players = [];
     this.#yourTurnNum = 0;
     this.#currPlayer = 1;
@@ -136,7 +161,6 @@ class ClientOtrio {
     const result = parseInt(msg.data, 16);
     const idx = result & 31;
     const state = (result & 224) >> 5;
-    this.#currPlayer = state;
     this.#board[idx].info = result;
     this.#board[idx].sig.value = (state != 7)
       ? this.#playerColors[state]
@@ -145,12 +169,12 @@ class ClientOtrio {
   #handleTurnMsg(msg: WebSockMsg): void {
     this.#currPlayer = +msg.data;
   }
-  #markOff(playerNum:number, idx: number, piece_cnt: number) {
-    let piece_pos = (piece_cnt == 7)?2:(piece_cnt==3)?1:0;
-    if(playerNum %2 == 0) piece_pos = 2 - piece_pos;
-    this.#playerPieces[playerNum - 1][(piece_pos * 3) + idx].value = this.#defaultColors.secondary;
+  #markOff(playerNum: number, idx: number, piece_cnt: number) {
+    const piece_pos = (piece_cnt == 7) ? 2 : (piece_cnt == 3) ? 1 : 0;
+    this.#playerPieces[playerNum - 1][(piece_pos * 3) + idx].value =
+      this.#defaultColors.secondary;
   }
-  render(){
+  render() {
     const pieces = this.#board.map((v, idx) => {
       const { x, y, i } = {
         y: (idx / 3 | 0) / 3 | 0,
@@ -161,18 +185,24 @@ class ClientOtrio {
         <ChangeCircle x={x} y={y} i={i} onChange={this.#onClick} sig={v.sig} />
       );
     });
-    this.#playerPieces = Array.from({ length: 2 }, (_,i) => {
-      return Array.from({ length: 9 }, ()=>useSignal(this.#playerColors[i+1]));
+    this.#playerPieces = Array.from({ length: 2 }, (_, i) => {
+      return Array.from(
+        { length: 9 },
+        () => useSignal(this.#playerColors[i + 1]),
+      );
     });
     const playerCircles = this.#playerPieces.flatMap((arr, j) => {
-      return arr.map((sig, i)=> (
+      const xOff = (j == 0) ? 4 : 27.5;
+      const xDir = (j == 0) ? 6.5 : -6.5;
+      return arr.map((sig, i) => (
         <circle
-        cx={4 + 6.5 * ((i/3)>>0) + (j*10)}
-        cy={5 + 36 * j}
-        r={.75 + (i%3)*.8}
-        stroke={sig}
-        strokeWidth={.5}
-        fill="none" />
+          cx={xOff + xDir * ((i / 3) >> 0)}
+          cy={5 + 36 * j}
+          r={.75 + (i % 3) * .8}
+          stroke={sig}
+          stroke-width={.75}
+          fill="none"
+        />
       ));
     });
     return (
@@ -182,9 +212,36 @@ class ClientOtrio {
         height="min(100vw, 100vh)"
         viewBox="0 0 32 46"
       >
-        <rect x={.25} y ={.5} width={21.5} height={17} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
-        <rect x={.25} y ={7.25} width={31.5} height={31.5} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
-        <rect x={10.25} y ={28.25} width={21.5} height={17} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
+        <rect
+          x={.25}
+          y={.5}
+          width={21.5}
+          height={17}
+          rx={5}
+          ry={5}
+          style={{ fill: this.#defaultColors.board }}
+        >
+        </rect>
+        <rect
+          x={.25}
+          y={7.25}
+          width={31.5}
+          height={31.5}
+          rx={5}
+          ry={5}
+          style={{ fill: this.#defaultColors.board }}
+        >
+        </rect>
+        <rect
+          x={10.25}
+          y={28.25}
+          width={21.5}
+          height={17}
+          rx={5}
+          ry={5}
+          style={{ fill: this.#defaultColors.board }}
+        >
+        </rect>
         {...playerCircles}
         {...pieces}
       </svg>
@@ -192,8 +249,13 @@ class ClientOtrio {
   }
   get #onClick() {
     function click(this: ClientOtrio, i: number) {
-      const piece_cnt = (this.#players[this.#currPlayer]?.pieces_left >> (3 * ((i & 31) % 3))) & 7;
-      if (this.#board[i].isOccupied || this.#currPlayer != this.#yourTurnNum || piece_cnt == 0) return;
+      const piece_cnt =
+        (this.#players[this.#currPlayer]?.pieces_left >> (3 * ((i & 31) % 3))) &
+        7;
+      if (
+        this.#board[i].isOccupied || this.#currPlayer != this.#yourTurnNum ||
+        piece_cnt == 0
+      ) return;
       this.#board[i].sig.value = this.#playerColors[this.#currPlayer];
       const msg: WebSockMsg = {
         type: "move",
@@ -217,5 +279,3 @@ export default function OtrioGame({ url }: { url: string }) {
   onbeforeunload = () => gameInfo.clean_up();
   return gameInfo.render();
 }
-
-

@@ -5,18 +5,18 @@ import { getUserByToken } from "../../server/database.tsx";
 const clients = new Map<string, WebSocket>();
 const serverGame = new OtrioServer();
 
-type _GameMsg = "end"| "move"| "reset" | "set" | "turn";
-type _ServerMsg ="join" | "leave" | "log" | "player" ;
-type MsgType =  _GameMsg | _ServerMsg
+type _GameMsg = "end" | "move" | "reset" | "set" | "turn";
+type _ServerMsg = "join" | "leave" | "log" | "player" | "update";
+type MsgType = _GameMsg | _ServerMsg;
 export interface WebSockMsg {
-  type: MsgType ;
+  type: MsgType;
   data: string;
 }
 export interface PlayerData {
-  username:string,
-  place: number,
-  sock_id: string,
-  pieces_left:number
+  username: string;
+  place: number;
+  sock_id: string;
+  pieces_left: number;
 }
 export function wsSend(target: string, msg: WebSockMsg) {
   if (target === "all") {

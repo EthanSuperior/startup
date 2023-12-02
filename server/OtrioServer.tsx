@@ -42,7 +42,7 @@ export default class OtrioServer {
   constructor() {
     this.#newGame();
   }
-  recieve(id: string, msg:WebSockMsg) {
+  recieve(id: string, msg: WebSockMsg) {
     switch (msg.type) {
       case "join":
         this.#handleJoinMsg(id, msg);
@@ -67,78 +67,131 @@ export default class OtrioServer {
     function getRandomItem<T, S>(set: Map<T, S>): T {
       return Array.from(set.keys())[Math.floor(Math.random() * set.size)];
     }
-    for (const i of this.#corpses)
+    for (const i of this.#corpses) {
       this.#board[i].state = 7;
+    }
     while (this.#currentlyPlaying.length < 2) {
       const id = getRandomItem(this.#players);
       if (!this.#currentlyPlaying.find((v) => v.sock_id == id)) {
-        const playerData: PlayerData = {sock_id:id, pieces_left:511, place:this.#currentlyPlaying.length+1, username:this.#players.get(id)??''}
+        const playerData: PlayerData = {
+          sock_id: id,
+          pieces_left: 511,
+          place: this.#currentlyPlaying.length + 1,
+          username: this.#players.get(id) ?? "",
+        };
         this.#currentlyPlaying.push(playerData);
       }
     }
+    console.log("Starting a game...");
     for (const plyrData of this.#currentlyPlaying) {
-      wsSend(plyrData.sock_id, {type:'join', data:JSON.stringify(plyrData.place)});
-      wsSend('all', {type:'player', data:JSON.stringify(plyrData)});
+      wsSend(plyrData.sock_id, {
+        type: "join",
+        data: JSON.stringify(plyrData.place),
+      });
+      wsSend("all", { type: "player", data: JSON.stringify(plyrData) });
     }
   }
-  #reset(){
+  #reset() {
     this.#board = Array.from({ length: 27 }, (_, idx) => new ServerSlot(idx));
     this.#currPlayer = 1;
     this.#currentlyPlaying = [];
   }
-  #handleJoinMsg(id:string, msg: WebSockMsg): void {
-    console.log(id, ' joined');
+  #handleJoinMsg(id: string, msg: WebSockMsg): void {
     const notStarted = this.#currentlyPlaying.length < 2;
     this.#players.set(id, msg.data);
+    console.log(this.#currentlyPlaying.length, " w ", this.#players.size);
     if (notStarted) this.#newGame();
-    for (const slot of this.#board)
-      if (slot.state !== 0)
-        wsSend(id, {type:"set", data:slot.toString()});
+    for (const slot of this.#board) {
+      if (slot.state !== 0) {
+        wsSend(id, { type: "set", data: slot.toString() });
+      }
+    }
+    wsSend(id, { type: "turn", data: this.#currPlayer.toString() });
   }
-  #handleLogMsg(id:string, msg: WebSockMsg): void {
+  #handleLogMsg(id: string, msg: WebSockMsg): void {
     console.log(`${this.#players.get(id)}[${id}] logged ${msg}`);
   }
-  #handleLeaveMsg(id:string, msg: WebSockMsg): void {
+  #handleLeaveMsg(id: string, msg: WebSockMsg): void {
     this.#players.delete(id);
     const idx_in_plys = this.#currentlyPlaying.find((v) => v.sock_id == id);
     if (idx_in_plys !== undefined) {
-      wsSend('all', {type:"leave", data:`${idx_in_plys.place}`});
+      wsSend("all", { type: "leave", data: `${idx_in_plys.place}` });
       this.#newGame();
     }
   }
-  #handleMoveMsg(id:string, msg: WebSockMsg): void {
+  #handleMoveMsg(id: string, msg: WebSockMsg): void {
     const slot = new ServerSlot(parseInt(msg.data, 16));
     const idx = slot.key % 3;
     const plyrData = this.#currentlyPlaying[this.#currPlayer - 1];
-    const piece_cnt = (plyrData.pieces_left >> (3*idx)) & 7;
-    if (this.#board[slot.key].isOccupied || this.#currPlayer !== slot.state || id !== plyrData?.sock_id  || piece_cnt == 0) {
-      wsSend(id, {type:'set', data:`${this.#board[slot.key].info}`});
-      console.log(this.#board.map(x=>x.toString()));
+    const piece_cnt = (plyrData.pieces_left >> (3 * idx)) & 7;
+    if (
+      this.#board[slot.key].isOccupied || this.#currPlayer !== slot.state ||
+      id !== plyrData?.sock_id || piece_cnt == 0
+    ) {
+      wsSend(id, { type: "set", data: `${this.#board[slot.key].info}` });
+      console.log(this.#board.map((x) => x.toString()));
       return;
     }
     wsSend("all", msg);
     this.#board[slot.key].state = slot.state;
-    plyrData.pieces_left &= ~(7<<(3*idx)) | ((piece_cnt >> 1) << (3*idx));
-    if (this.#checkWinCondtions()) return
-    if (++this.#currPlayer > this.#currentlyPlaying.length){
-      wsSend('all', {type:'turn', data:'1'}); 
+    plyrData.pieces_left &= ~(7 << (3 * idx)) | ((piece_cnt >> 1) << (3 * idx));
+    if (this.#checkWinCondtions()) return;
+    if (++this.#currPlayer > this.#currentlyPlaying.length) {
+      wsSend("all", { type: "turn", data: "1" });
       this.#currPlayer = 1;
       if (this.#currentlyPlaying[0].pieces_left == 0) this.#catsGame();
     }
   }
-  #catsGame(){
-    wsSend('all', {type:"end", data:"Cats Game"});
+  #catsGame() {
+    wsSend("all", { type: "end", data: "Cats Game" });
     this.#corpses = [];
     this.#newGame();
   }
-  #winsGame(){
-    wsSend('all', {type:"end", data:`${this.#currentlyPlaying[this.#currPlayer - 1].username} Won!`});
+  #winsGame() {
+    wsSend("all", {
+      type: "end",
+      data: `${this.#currentlyPlaying[this.#currPlayer - 1].username} Won!`,
+    });
     this.#corpses = [];
     this.#newGame();
   }
-  #checkWinCondtions() : boolean {
-    if (this.#board.every(s=>s.isOccupied))
-      return this.#catsGame(), true
-    return false
+  #checkThreeWin(pos: [number, number, number]) {
+    for (let i = 0; i < 3; i++) {
+      if (
+        this.#board[pos[0] + i].state === this.#board[pos[1] + i].state &&
+        this.#board[pos[1] + i].state === this.#board[pos[2] + i].state &&
+        this.#board[pos[2] + i].state === this.#currPlayer
+      ) return true;
+    }
+    if (
+      this.#board[pos[0]].state == this.#board[pos[1] + 1].state &&
+      this.#board[pos[1] + 1].state == this.#board[pos[2] + 2].state &&
+      this.#board[pos[2] + 2].state == this.#currPlayer
+    ) return true;
+    if (
+      this.#board[pos[0] + 2].state == this.#board[pos[1] + 1].state &&
+      this.#board[pos[1] + 1].state == this.#board[pos[2]].state &&
+      this.#board[pos[2]].state == this.#currPlayer
+    ) return true;
+    return false;
+  }
+  #checkWinCondtions(): boolean {
+    const winningCombinations: [number, number, number][] = [
+      [0, 3, 6],
+      [9, 12, 15],
+      [18, 21, 24],
+      [0, 9, 18],
+      [3, 12, 21],
+      [6, 15, 24],
+      [0, 12, 24],
+      [6, 12, 18],
+    ];
+    if (winningCombinations.some(this.#checkThreeWin.bind(this))) {
+      return this.#winsGame(), true;
+    }
+    if (this.#board.every((s) => s.isOccupied)) {
+      return this.#catsGame(), true;
+    }
+    return false;
   }
 }

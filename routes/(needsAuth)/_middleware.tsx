@@ -1,4 +1,4 @@
-import { MiddlewareHandlerContext } from "$fresh/server.ts";
+import { FreshContext } from "$fresh/server.ts";
 import { getCookies } from "$std/http/cookie.ts";
 import { getUserByToken } from "../../server/database.tsx";
 
@@ -8,7 +8,7 @@ export const handler = [
 
 async function authenticate(
   req: Request,
-  ctx: MiddlewareHandlerContext,
+  ctx: FreshContext,
 ): Promise<Response> {
   if (req.method == "GET" && req.url.endsWith("/score")) {
     return await ctx.next();

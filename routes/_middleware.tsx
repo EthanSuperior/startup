@@ -11,7 +11,7 @@ async function logging(
   ctx: FreshContext,
 ): Promise<Response> {
   const res = await ctx.next();
-  if (!req.url.includes("_frsh")) {
+  if (req && !req.url.includes("_frsh")) {
     console.log(`${req.method} ${req.url} ${res.status}`);
   }
   return res;
