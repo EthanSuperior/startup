@@ -1,25 +1,25 @@
 import { useEffect } from "preact/hooks";
 import { ChangeCircle } from "./CicleSet.tsx";
 import Slot from "./Slot.tsx";
-import { WebSockMsg } from "../routes/(needsAuth)/ws.tsx";
+import { PlayerData, WebSockMsg } from "../routes/(needsAuth)/ws.tsx";
 import { IS_BROWSER } from "$fresh/runtime.ts";
+import { Signal } from "@preact/signals";
 
-const Log = (() => {
-  let logger: HTMLElement | null;
-  // deno-lint-ignore no-explicit-any
-  return (msg: any | string, _tag: string | null = null) => {
-    if (!IS_BROWSER) return;
-    if (typeof document === "undefined") return;
-    logger = document.querySelector("#log_msg");
-    if (!logger) return;
-    msg = JSON.stringify(msg);
-    console.log(msg);
-    if (msg == "") return;
-    const msgbox = document.createElement("li");
-    msgbox.textContent = msg;
-    logger.appendChild(msgbox);
-  };
-})();
+let logger: HTMLElement | null;
+// deno-lint-ignore no-explicit-any
+function Log(msg: any | string, _tag: string | null=null){
+  if (!IS_BROWSER) return;
+  if (typeof document === "undefined") return;
+  logger = document.querySelector("#log_msg");
+  if (!logger) return;
+  msg = JSON.stringify(msg);
+  console.log(msg);
+  if (msg == "") return;
+  const msgbox = document.createElement("li");
+  msgbox.textContent = msg;
+  logger.appendChild(msgbox);
+};
+
 
 interface UserSettings {
   corpse: string; //Corpse Color
@@ -30,29 +30,29 @@ interface UserSettings {
 
 class ClientOtrio {
   #board: Slot[];
-  #currPlayer: number;
+  #players: PlayerData[] = [];
+  #playerPeices: Signal<string>[][] = [[],[]];
+  #currPlayer = 1;
+  #yourTurnNum = 0;
   #playerID!: string;
   #socket!: WebSocket;
-  #playerColors: string[];
-  #defaultColors: UserSettings;
+  #playerColors = [
+    "#B58B59",
+    "#9fff37",
+    "#fe122e",
+    "#3d03b5",
+    "#9f009f",
+  ];
+  #defaultColors: UserSettings = {
+    corpse: "#382e17",
+    hover: 0.33,
+    board: "#FED06B",
+    secondary: "#B58B59",
+  };
   constructor(url: URL) {
     // corpse_colors = ["#6cd10066", "#a7011466", "#1b005266", "#38003866"]
     // player: "#9fff37",
-    this.#defaultColors = {
-      corpse: "#33000000",
-      hover: 0.33,
-      board: "#FED06B",
-      secondary: "#220033",
-    };
     this.#board = Array.from({ length: 27 }, (_, idx) => new Slot(idx));
-    this.#currPlayer = 0;
-    this.#playerColors = [
-      "#000000",
-      "#9fff37",
-      "#fe122e",
-      "#3d03b5",
-      "#9f009f",
-    ];
     this.#initialize(url);
   }
   #initialize(url: URL) {
@@ -61,28 +61,6 @@ class ClientOtrio {
     const sockURL = `${wsProtocol}://${url.hostname}:${url.port}/ws`;
     this.#socket = new WebSocket(`${sockURL}?${this.#playerID}`);
     this.#socket.addEventListener("message", this.#receive.bind(this));
-  }
-  get onClick() {
-    function click(this: ClientOtrio, svg: SVGCircleElement, i: number) {
-      if (this.board[i].isOccupied || !this.#currPlayer) return;
-      svg.style.stroke = this.#playerColors[this.#currPlayer];
-      const msg: WebSockMsg = {
-        type: "move",
-        data: ((this.#currPlayer << 5) | i).toString(16),
-      };
-      this.#socket.send(JSON.stringify(msg));
-    }
-    const colorFunc = click.bind(this);
-    return function (this: SVGCircleElement, key: number) {
-      return colorFunc(this, key);
-    };
-  }
-  get board() {
-    return this.#board;
-  }
-  clean_up() {
-    this.#socket.removeEventListener("message", this.#receive.bind(this));
-    this.#socket.close();
   }
   #receive({ data: jsonStr }: MessageEvent<string>) {
     const msg = JSON.parse(jsonStr);
@@ -94,7 +72,7 @@ class ClientOtrio {
         this.#handleResetMsg(msg);
         break;
       case "end":
-        this.#handleResetMsg(msg);
+        this.#handleEndMsg(msg);
         break;
       case "turn":
         this.#handleTurnMsg(msg);
@@ -108,73 +86,118 @@ class ClientOtrio {
       case "log":
         this.#handleLogMsg(msg);
         break;
+      case "leave":
+        this.#handleLeaveMsg(msg);
+        break;
+      case "join":
+        this.#handleJoinMsg(msg);
+        Log(msg);
+        break;
       default:
+        console.error(`Unknown msg type ${msg.type} with value: ${msg.data}`);
         break;
     }
   }
   #handleEndMsg(msg: WebSockMsg): void {
+    console.log(msg.data);
+    this.#handleResetMsg(msg);
   }
   #handleJoinMsg(msg: WebSockMsg): void {
+    this.#yourTurnNum = +msg.data
   }
   #handleLogMsg(msg: WebSockMsg): void {
     Log(msg);
   }
   #handleLeaveMsg(msg: WebSockMsg): void {
+    Log(msg);
   }
   #handleMoveMsg(msg: WebSockMsg): void {
     this.#handleSetMsg(msg);
-    this.#currPlayer = this.#currPlayer + 1;
+    const idx = (parseInt(msg.data, 16) & 31) % 3;
+    const plyrData = this.#players[this.#currPlayer];
+    const piece_cnt = (plyrData.pieces_left >> (3*idx)) & 7;
+    plyrData.pieces_left &= ~(7<<(3*idx)) | ((piece_cnt >> 1) << (3*idx));
+    this.#markOff(this.#currPlayer++, idx, piece_cnt);
   }
   #handlePlayerMsg(msg: WebSockMsg): void {
-    const num = +msg.data.charAt(0);
-    const name = msg.data.slice(1);
+    const playerData:PlayerData = JSON.parse(msg.data);
+    this.#players[playerData.place] = playerData;
   }
   #handleResetMsg(msg: WebSockMsg): void {
     this.#board.forEach((s) => {
       s.state = 0;
       s.sig.value = this.#playerColors[0];
     });
+    this.#players = [];
+    this.#yourTurnNum = 0;
+    this.#currPlayer = 1;
   }
   #handleSetMsg(msg: WebSockMsg): void {
     const result = parseInt(msg.data, 16);
     const idx = result & 31;
     const state = (result & 224) >> 5;
     this.#currPlayer = state;
-    this.board[idx].info = result;
-    this.board[idx].sig.value = (state != 7)
+    this.#board[idx].info = result;
+    this.#board[idx].sig.value = (state != 7)
       ? this.#playerColors[state]
       : this.#defaultColors.corpse;
   }
   #handleTurnMsg(msg: WebSockMsg): void {
     this.#currPlayer = +msg.data;
   }
+  #markOff(playerNum:number, idx: number, piece_cnt: number) {
+    const piece_pos = (piece_cnt == 7)?2:(piece_cnt==3)?1:0;
+    this.#playerPeices[playerNum - 1][piece_pos + (idx*3)].value = this.#defaultColors.secondary;
+  }
+  render(){
+    const pieces = this.#board.map((v, idx) => {
+      const { x, y, i } = {
+        y: (idx / 3 | 0) / 3 | 0,
+        x: (idx / 3 | 0) % 3,
+        i: idx % 3,
+      };
+      return (
+        <ChangeCircle x={x} y={y} i={i} onChange={this.#onClick} sig={v.sig} />
+      );
+    });
+    return (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="min(100vw, 100vh)"
+        height="min(100vw, 100vh)"
+        viewBox="0 0 32 32"
+      >
+        <rect x={.25} y ={.25} width={31.5} height={31.5} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
+        {...pieces}
+      </svg>
+    );
+  }
+  get #onClick() {
+    function click(this: ClientOtrio, i: number) {
+      const piece_cnt = (this.#players[this.#currPlayer]?.pieces_left >> (3 * ((i & 31) % 3))) & 7;
+      if (this.#board[i].isOccupied || this.#currPlayer != this.#yourTurnNum || piece_cnt == 0) return;
+      this.#board[i].sig.value = this.#playerColors[this.#currPlayer];
+      const msg: WebSockMsg = {
+        type: "move",
+        data: ((this.#yourTurnNum << 5) | i).toString(16),
+      };
+      this.#socket.send(JSON.stringify(msg));
+    }
+    const colorFunc = click.bind(this);
+    return function (this: SVGCircleElement, key: number) {
+      return colorFunc(key);
+    };
+  }
+  clean_up() {
+    this.#socket.removeEventListener("message", this.#receive.bind(this));
+    this.#socket.close();
+  }
 }
 
 export default function OtrioGame({ url }: { url: string }) {
   const gameInfo = new ClientOtrio(new URL(url));
-  useEffect(() => {
-    return () => {
-      gameInfo.clean_up();
-    };
-  });
-  const pieces = gameInfo.board.map((v, idx) => {
-    const { x, y, i } = {
-      y: (idx / 3 | 0) / 3 | 0,
-      x: (idx / 3 | 0) % 3,
-      i: idx % 3,
-    };
-    return (
-      <ChangeCircle x={x} y={y} i={i} onChange={gameInfo.onClick} sig={v.sig} />
-    );
-  });
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="min(100vw, 100vh)"
-      height="min(100vw, 100vh)"
-      viewBox="0 0 32 32"
-    >
-      {...pieces}
-    </svg>
-  );
+  onbeforeunload = () => gameInfo.clean_up();
+  return gameInfo.render();
 }
+
+
