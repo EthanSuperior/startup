@@ -1,9 +1,8 @@
-import { useEffect } from "preact/hooks";
 import { ChangeCircle } from "./CicleSet.tsx";
 import Slot from "./Slot.tsx";
 import { PlayerData, WebSockMsg } from "../routes/(needsAuth)/ws.tsx";
 import { IS_BROWSER } from "$fresh/runtime.ts";
-import { Signal } from "@preact/signals";
+import { Signal, useSignal } from "@preact/signals";
 
 let logger: HTMLElement | null;
 // deno-lint-ignore no-explicit-any
@@ -31,7 +30,7 @@ interface UserSettings {
 class ClientOtrio {
   #board: Slot[];
   #players: PlayerData[] = [];
-  #playerPeices: Signal<string>[][] = [[],[]];
+  #playerPieces: Signal<string>[][] = [];
   #currPlayer = 1;
   #yourTurnNum = 0;
   #playerID!: string;
@@ -128,6 +127,7 @@ class ClientOtrio {
       s.state = 0;
       s.sig.value = this.#playerColors[0];
     });
+    this.#playerPieces.forEach((arr,i)=>arr.forEach(v=>v.value = this.#playerColors[i+1]));
     this.#players = [];
     this.#yourTurnNum = 0;
     this.#currPlayer = 1;
@@ -146,8 +146,9 @@ class ClientOtrio {
     this.#currPlayer = +msg.data;
   }
   #markOff(playerNum:number, idx: number, piece_cnt: number) {
-    const piece_pos = (piece_cnt == 7)?2:(piece_cnt==3)?1:0;
-    this.#playerPeices[playerNum - 1][piece_pos + (idx*3)].value = this.#defaultColors.secondary;
+    let piece_pos = (piece_cnt == 7)?2:(piece_cnt==3)?1:0;
+    if(playerNum %2 == 0) piece_pos = 2 - piece_pos;
+    this.#playerPieces[playerNum - 1][(piece_pos * 3) + idx].value = this.#defaultColors.secondary;
   }
   render(){
     const pieces = this.#board.map((v, idx) => {
@@ -160,14 +161,31 @@ class ClientOtrio {
         <ChangeCircle x={x} y={y} i={i} onChange={this.#onClick} sig={v.sig} />
       );
     });
+    this.#playerPieces = Array.from({ length: 2 }, (_,i) => {
+      return Array.from({ length: 9 }, ()=>useSignal(this.#playerColors[i+1]));
+    });
+    const playerCircles = this.#playerPieces.flatMap((arr, j) => {
+      return arr.map((sig, i)=> (
+        <circle
+        cx={4 + 6.5 * ((i/3)>>0) + (j*10)}
+        cy={5 + 36 * j}
+        r={.75 + (i%3)*.8}
+        stroke={sig}
+        strokeWidth={.5}
+        fill="none" />
+      ));
+    });
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="min(100vw, 100vh)"
         height="min(100vw, 100vh)"
-        viewBox="0 0 32 32"
+        viewBox="0 0 32 46"
       >
-        <rect x={.25} y ={.25} width={31.5} height={31.5} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
+        <rect x={.25} y ={.5} width={21.5} height={17} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
+        <rect x={.25} y ={7.25} width={31.5} height={31.5} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
+        <rect x={10.25} y ={28.25} width={21.5} height={17} rx={5} ry={5} style={{fill:this.#defaultColors.board}}></rect>
+        {...playerCircles}
         {...pieces}
       </svg>
     );

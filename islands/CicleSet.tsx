@@ -23,7 +23,7 @@ export function ChangeCircle(props: CircleProps) {
       ref={circleRef}
       key={key()}
       cx={6 + 10 * props.x}
-      cy={6 + 10 * props.y}
+      cy={13 + 10 * props.y}
       r={1.5 + props.i! * 1.25}
       stroke={props.sig}
       strokeWidth="1"
