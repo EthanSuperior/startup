@@ -16,9 +16,6 @@ export default async function PlayOtrio(req: Request) {
               <OtrioGame url={req.url} {...{ "username": username }} />
             </div>
           </div>
-          <div class="col-span-2">
-            <Log />
-          </div>
         </div>
       </main>
     </>
