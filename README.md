@@ -145,14 +145,15 @@ Log in will be done shortly with the next deliverable...
 
 ## WebSocket deliverable
 
-For this deliverable I used webSocket to update the votes on the frontend in
-realtime.
+For this deliverable I used webSocket to allow you to play with somebody real
+time.
 
 - Backend listens for WebSocket connection - done!
 - Frontend makes WebSocket connection - done!
 - Data sent over WebSocket connection - done!
-- WebSocket data displayed - All user votes display in realtime. I'm really
-  proud that this is working. Way cool!~~
+- WebSocket data displayed - All user moves are displayed in real time. It's
+  pretty cool if a little glitchy still, eventually I want to make it use rooms
+  for the sockets so that many games can be played at the same time.
 
 ## React deliverable
 
