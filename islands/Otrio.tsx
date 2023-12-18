@@ -57,7 +57,8 @@ class ClientOtrio {
   }
   #initialize(url: URL) {
     this.#playerID = crypto.randomUUID();
-    const wsProtocol = url.protocol === "http:" ? "ws" : "wss";
+    console.log(url.protocol);
+    const wsProtocol = "wss"; //url.protocol === "http:" ? "ws" : "wss"
     const sockURL = `${wsProtocol}://${url.hostname}:${url.port}/ws`;
     this.#socket = new WebSocket(`${sockURL}?${this.#playerID}`);
     this.#socket.addEventListener("open", () => {
